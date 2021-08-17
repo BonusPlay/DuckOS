@@ -34,4 +34,16 @@ void* memcpy(void* dest_, const void* src_, uint32_t count_)
     return original_dest;
 }
 
+void* memset(void* dest_, uint32_t value_, int32_t count_)
+{
+    auto* original_dest = dest_;
+	__asm__(
+        ".intel_syntax;"
+        "rep stosb;"
+        : "=D" (dest_), "=c" (value_)
+        : "0" (dest_), "1" (value_), "a" (count_)
+        : "memory");
+	return original_dest;
+}
+
 }
