@@ -2,7 +2,10 @@
 #include "dstd/cstdint.hpp"
 #include "dstd/string.hpp"
 
-enum class VgaColor : uint16_t {
+namespace vga
+{
+
+enum class Color : uint16_t {
     BLACK = 0,
     BLUE = 1,
     GREEN = 2,
@@ -21,5 +24,9 @@ enum class VgaColor : uint16_t {
     WHITE = 15,
 };
 
-void vga_test();
-void vga_print(const dstd::String&);
+void test();
+void set_pos(uint8_t x, uint8_t y);
+void print(const dstd::String&);
+void clear(Color bg = Color::BLACK);
+
+}

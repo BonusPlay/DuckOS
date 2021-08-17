@@ -1,13 +1,17 @@
 #include "vga.hpp"
+#include "dstd/cstring.hpp"
 
-volatile uint16_t* framebuf = reinterpret_cast<volatile uint16_t*>(0xB8000);
+namespace vga
+{
 
-inline uint8_t make_color(const VgaColor& foreground = VgaColor::WHITE, const VgaColor& background = VgaColor::BLACK)
+uint16_t* framebuf = reinterpret_cast<uint16_t*>(0xB8000);
+
+inline uint8_t make_color(const Color& foreground = Color::WHITE, const Color& background = Color::BLACK)
 {
     return static_cast<uint8_t>(background) << 4 | static_cast<uint8_t>(foreground);
 }
 
-inline uint16_t entry(const unsigned char data, const uint8_t color = make_color())
+inline uint16_t make_cell(const unsigned char data, const uint8_t color = make_color())
 {
     return static_cast<uint16_t>(color) << 8 | static_cast<uint16_t>(data);
 }
@@ -32,12 +36,18 @@ void print_char(const char symbol)
     }
 
     // write actual character
-    *(tmp + x + y * 80) = entry(symbol);
+    *(tmp + x + y * 80) = make_cell(symbol);
 
     ++x;
 }
 
-void vga_print(const dstd::String& str)
+void set_pos(uint8_t x_, uint8_t y_)
+{
+    x = x_;
+    y = y_;
+}
+
+void print(const dstd::String& str)
 {
     for(uint32_t i = 0; i < str.length(); ++i)
     {
@@ -60,4 +70,16 @@ void vga_print(const dstd::String& str)
 
         print_char(chr);
     }
+}
+
+void clear(Color bg_)
+{
+    const auto tmp = make_cell('\0', make_color(Color::WHITE, bg_)) << 16;
+    const auto value = static_cast<uint32_t>(tmp << 16 & tmp);
+    //dstd::memset(static_cast<void*>(framebuf), value, 80 * 24);
+    for(auto i = 0; i < 25; ++i)
+        for(auto j = 0; j < 80; ++j)
+            *(framebuf + j + i * 80) = value;
+}
+
 }
