@@ -17,9 +17,7 @@ SECTIONS
  
 	.data BLOCK(4K) : ALIGN(4K)
 	{
-        __DATA_SECTION_START = .;
 		*(.data)
-        __DATA_SECTION_END = .;
 	}
  
 	.bss BLOCK(4K) : ALIGN(4K)
@@ -27,4 +25,11 @@ SECTIONS
 		*(COMMON)
 		*(.bss)
 	}
+
+    .heap BLOCK(4K) : ALIGN(4K)
+    {
+        __HEAP_SECTION_START = .;
+        . += 0x1000;
+        __HEAP_SECTION_END = .;
+    }
 }

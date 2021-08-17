@@ -4,6 +4,8 @@
 namespace vga
 {
 
+constexpr const auto MAX_WIDTH = 80;
+constexpr const auto MAX_HEIGHT = 25;
 uint16_t* framebuf = reinterpret_cast<uint16_t*>(0xB8000);
 
 inline uint8_t make_color(const Color& foreground = Color::WHITE, const Color& background = Color::BLACK)
@@ -18,6 +20,7 @@ inline uint16_t make_cell(const unsigned char data, const uint8_t color = make_c
 
 uint8_t x = 0;
 uint8_t y = 0;
+uint8_t color = make_color();
 
 void print_char(const char symbol)
 {
@@ -36,7 +39,7 @@ void print_char(const char symbol)
     }
 
     // write actual character
-    *(tmp + x + y * 80) = make_cell(symbol);
+    *(tmp + x + y * 80) = make_cell(symbol, color);
 
     ++x;
 }
@@ -45,6 +48,11 @@ void set_pos(uint8_t x_, uint8_t y_)
 {
     x = x_;
     y = y_;
+}
+
+void set_color(Color fg_, Color bg_)
+{
+    color = make_color(fg_, bg_);
 }
 
 void print(const dstd::String& str)
@@ -74,11 +82,11 @@ void print(const dstd::String& str)
 
 void clear(Color bg_)
 {
-    const auto tmp = make_cell('\0', make_color(Color::WHITE, bg_)) << 16;
+    const auto tmp = make_cell(' ', make_color(Color::WHITE, bg_)) << 16;
     const auto value = static_cast<uint32_t>(tmp << 16 & tmp);
     //dstd::memset(static_cast<void*>(framebuf), value, 80 * 24);
-    for(auto i = 0; i < 25; ++i)
-        for(auto j = 0; j < 80; ++j)
+    for(auto i = 0; i < MAX_HEIGHT; ++i)
+        for(auto j = 0; j < MAX_WIDTH; ++j)
             *(framebuf + j + i * 80) = value;
 }
 

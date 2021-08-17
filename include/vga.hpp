@@ -26,6 +26,7 @@ enum class Color : uint16_t {
 
 void test();
 void set_pos(uint8_t x, uint8_t y);
+void set_color(Color fg = Color::WHITE, Color bg = Color::BLACK);
 void print(const dstd::String&);
 void clear(Color bg = Color::BLACK);
 
