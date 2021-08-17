@@ -7,6 +7,7 @@ PAGE_RW     equ 1 << 1
 ; IA32_EFER MSR
 IA32_EFER equ 0xC0000080
 
+section .pmlt
 align 0x1000
 pml4t:
 times (512) dq 0x00
