@@ -4,6 +4,9 @@
 PAGE_EXISTS equ 1 << 0
 PAGE_RW     equ 1 << 1
 
+; IA32_EFER MSR
+IA32_EFER equ 0xC0000080
+
 align 0x1000
 pml4t:
 times (512) dq 0x00
@@ -51,7 +54,7 @@ _setup_paging:
     mov cr4, eax
 
     ; enable Long Mode Enable
-    mov ecx, 0xC0000080
+    mov ecx, IA32_EFER
     rdmsr
     or eax, 1 << 8
     wrmsr
