@@ -10,5 +10,7 @@ $ mkdir build
 $ cd build
 $ cmake -G Ninja ..
 $ ninja
-$ ../scripts/run-qemu-kernel.sh
+$ cd ../scripts/
+$ sudo ./build-image.sh
+$ sudo ./run-qemu-image.sh
 ```
