@@ -22,7 +22,7 @@ set(CMAKE_ASM_COMPILE_OBJECT "<CMAKE_ASM_COMPILER> <FLAGS> -o <OBJECT> <SOURCE>"
 # C++
 set(CMAKE_CXX_COMPILER clang)
 set(CMAKE_CXX_STANDARD 20)
-set(CMAKE_CXX_FLAGS "-O -Wall -Wextra -fno-rtti -fno-exceptions -nostdlib -ffreestanding -fno-PIE -target x86_64-none-elf")
+set(CMAKE_CXX_FLAGS "-O -Wall -Wextra -fno-rtti -fno-exceptions -nostdlib -ffreestanding -fno-PIE -target x86_64-none-elf -mcmodel=large -mno-red-zone -mno-mmx -mno-sse -mno-sse2")
 
 # linker
 set(CMAKE_LINKER ld.lld)
