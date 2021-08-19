@@ -11,8 +11,7 @@ jobs:
       - name: Install dependencies
         run: |
           sudo apt update -q &&
-          sudo apt install -y clang cmake lld-12 ninja-build nasm &&
-          sudo ln -s /usr/bin/ld.lld-12 /usr/bin/ld.lld
+          sudo apt install -y cppcheck
       - name: cppcheck dstd
         run: |
           cppcheck -j $(nproc) --error-exitcode=1 --language=c++ --enable=all -I ./dstd/include/ ./dstd/src/

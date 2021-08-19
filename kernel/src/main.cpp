@@ -1,7 +1,6 @@
 #include "main.hpp"
 #include "vga.hpp"
 #include "serial.hpp"
-#include "idt.hpp"
 
 [[noreturn]]
 void kmain()
@@ -17,12 +16,6 @@ void kmain()
     vga::print("No witam, mam newline'y\n");
     vga::set_color(vga::Color::GREEN);
     vga::print("Nawet kolorki\n");
-
-/*     serial::print("UWAGA NAKURWIAM IDT\n");
- *
- *     idt::init();
- *
- *     serial::print("are we there?\n"); */
 
     while(true)
     {};
