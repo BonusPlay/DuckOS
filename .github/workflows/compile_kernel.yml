@@ -1,0 +1,22 @@
+name: compile kernel
+on: [push]
+jobs:
+  compile:
+    runs-on: ubuntu-latest
+    env:
+      CC: clang
+      CXX: clang++
+    steps:
+      - uses: actions/checkout@v2
+      - name: Install dependencies
+        run: |
+          sudo apt update -q &&
+          sudo apt install -y clang cmake lld-12 ninja-build nasm &&
+          sudo ln -s /usr/bin/ld.lld-12 /usr/bin/ld.lld
+      - name: run cmake
+        run: |
+          mkdir build &&
+          cd build &&
+          cmake .. -G Ninja -DBUILD_KERNEL=ON
+      - name: run ninja
+        run: ninja

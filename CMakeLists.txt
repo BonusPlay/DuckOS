@@ -12,10 +12,14 @@ project(DuckOS
 #     message(STATUS "${_variableName}=${${_variableName}}")
 # endforeach()
 
+option(BUILD_KERNEL "Builds kernel" ON)
 option(BUILD_TESTS "Builds unit tests" OFF)
 
 add_subdirectory(dstd)
-add_subdirectory(kernel)
+
+if(${BUILD_KERNEL})
+    add_subdirectory(kernel)
+endif()
 
 if(${BUILD_TESTS})
     add_subdirectory(tests)
