@@ -50,5 +50,5 @@ inline uint64_t rdmsr(uint64_t msr_id_)
 		: "=a"(low), "=d"(high)
 		: "c"(msr_id_)
 	);
-    return static_cast<uint64_t>(high << 32) | low;
+    return (static_cast<uint64_t>(high) << 32) | low;
 }
