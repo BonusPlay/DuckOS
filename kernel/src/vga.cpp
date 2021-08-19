@@ -71,7 +71,7 @@ void print(const dstd::String& str)
         
         if (chr == '\t')
         {
-            for(auto i = 0; i < 4; ++i)
+            for(auto j = 0; j < 4; ++j)
                 print_char(' ');
             continue;
         }

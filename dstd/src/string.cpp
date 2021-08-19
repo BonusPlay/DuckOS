@@ -39,6 +39,9 @@ String::String(String&& other_)
 
 String& String::operator=(const String& other_)
 {
+    if (this == &other_)
+        return *this;
+
     this->length_ = other_.length_;
     const auto size = this->length_ == 0
         ? 0

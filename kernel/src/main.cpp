@@ -3,6 +3,7 @@
 #include "serial.hpp"
 
 [[noreturn]]
+// cppcheck-suppress unusedFunction
 void kmain()
 {
     if (!serial::init())

@@ -38,17 +38,6 @@ void write_serial(const char a, uint16_t port = PORT_COM1)
     out(port, a);
 }
 
-void test()
-{
-    write_serial('a');
-}
-
-void xdd(uint32_t value_)
-{
-    for(uint32_t i = 0; i < sizeof(value_); i++)
-        write_serial(static_cast<uint8_t>(value_ >> i) + 48);
-}
-
 void print(const dstd::String& str)
 {
     for(uint32_t i = 0; i < str.length(); ++i)
