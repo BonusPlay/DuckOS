@@ -8,8 +8,8 @@ FetchContent_MakeAvailable(Catch2)
 
 set(CMAKE_CXX_STANDARD 20)
 
-add_executable(tests test.cpp)
-target_link_libraries(tests PRIVATE Catch2::Catch2WithMain DuckSTD)
+# files
+file(GLOB_RECURSE CPP_SRCS RELATIVE ${CMAKE_CURRENT_LIST_DIR} *.cpp)
 
-# DuckSTD global int types
-#target_compile_definitions(tests PRIVATE DSTD_GLOBAL_INTS=0)
+add_executable(tests ${CPP_SRCS})
+target_link_libraries(tests PRIVATE Catch2::Catch2WithMain DuckSTD)
