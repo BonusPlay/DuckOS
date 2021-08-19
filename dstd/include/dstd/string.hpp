@@ -52,6 +52,9 @@ String to_string(const T val_)
 
     buf[i] = '\0';
 
+    // decrement size, as we will reverse the string
+    // but we can keep the '\0' in same place
+    --i;
     int start = 0;
     while (start < i)
     {
@@ -63,9 +66,10 @@ String to_string(const T val_)
     return String(buf);
 }
 
+bool operator==(const String&, const String&);
+
 }
 
-// TODO: make this constexpr
 #ifdef DSTD_GLOBAL_INTS
 dstd::String operator "" _s(const char*, uint32_t);
 #else

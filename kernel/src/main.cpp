@@ -10,6 +10,7 @@ void kmain()
         vga::print("Failed to init serial"_s);
 
     serial::print("DuckOS starting up\n"_s);
+    serial::print(dstd::to_string(123));
 
     vga::clear();
     vga::set_pos(0, 0);

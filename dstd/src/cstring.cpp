@@ -23,6 +23,22 @@ void strcpy(char* dest_, const char* src_, const uint32_t count_)
     }
 }
 
+int32_t strcmp(const char* lhs, const char* rhs)
+{
+    while(*lhs == *rhs)
+    {
+        if (*lhs == '\0')
+            return 0;
+
+        ++lhs;
+        ++rhs;
+    }
+
+    return *lhs > *rhs
+        ? 1
+        : -1;
+}
+
 void* memcpy(void* dest_, const void* src_, uint32_t count_)
 {
     void* original_dest = dest_;

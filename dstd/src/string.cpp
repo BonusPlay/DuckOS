@@ -95,6 +95,11 @@ uint32_t String::length() const
     return this->length_;
 }
 
+bool operator==(const String& lhs, const String& rhs)
+{
+    return dstd::strcmp(lhs.data(), rhs.data()) == 0;
+}
+
 }
 
 #ifdef DSTD_GLOBAL_INTS
