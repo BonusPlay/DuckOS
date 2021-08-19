@@ -23,4 +23,4 @@ jobs:
           cd build && \
           ninja
       - name: run tests
-        run: ./tests/tests  
+        run: ./build/tests/tests  
