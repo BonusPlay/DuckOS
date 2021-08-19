@@ -19,4 +19,6 @@ jobs:
           cd build &&
           cmake .. -G Ninja -DBUILD_KERNEL=ON
       - name: run ninja
-        run: ninja
+        run: |
+          cd build &&
+          ninja

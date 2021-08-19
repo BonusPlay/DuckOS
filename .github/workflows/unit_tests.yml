@@ -19,6 +19,8 @@ jobs:
           cd build &&
           cmake .. -G Ninja -DBUILD_KERNEL=OFF -DBUILD_TESTS=ON
       - name: run ninja
-        run:  ninja
+        run:  |
+          cd build && \
+          ninja
       - name: run tests
         run: ./tests/tests  
