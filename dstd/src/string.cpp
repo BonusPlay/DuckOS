@@ -60,6 +60,11 @@ String& String::operator=(String&& other_)
     return *this;
 }
 
+String::~String()
+{
+    delete[] this->raw_str_;
+}
+
 char& String::operator[](uint32_t index_)
 {
     assert(index_ >= this->length_);

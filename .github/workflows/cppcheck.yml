@@ -14,7 +14,7 @@ jobs:
           sudo apt install -y cppcheck
       - name: cppcheck dstd
         run: |
-          cppcheck -j $(nproc) --error-exitcode=1 --language=c++ --enable=all -I ./dstd/include/ ./dstd/src/
+          cppcheck --error-exitcode=1 --language=c++ --enable=all -I ./dstd/include/ ./dstd/src/
       - name: cppcheck kernel
         run: |
-          cppcheck -j $(nproc) --error-exitcode=1 --language=c++ --enable=all -I ./dstd/include/ -I ./kernel/include/ ./kernel/src/
+          cppcheck --error-exitcode=1 --language=c++ --enable=all -I ./dstd/include/ -I ./kernel/include/ ./kernel/src/

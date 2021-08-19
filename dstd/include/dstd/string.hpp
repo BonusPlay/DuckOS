@@ -9,11 +9,13 @@ namespace dstd {
 class String
 {
 public:
+    // cppcheck-suppress noExplicitConstructor
     String(const char*);
     String(const String&);
     String(String&&);
     String& operator=(const String&);
     String& operator=(String&&);
+    ~String();
 
     char& operator[](uint32_t index);
     const char& operator[](uint32_t index) const;
