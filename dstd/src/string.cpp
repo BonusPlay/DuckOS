@@ -87,29 +87,13 @@ uint32_t String::length() const
     return this->length_;
 }
 
-String to_string(const uint8_t)
-{
-    return "0";
 }
 
-String to_string(const uint16_t)
-{
-    return "0";
-}
-
-String to_string(const uint32_t)
-{
-    return "0";
-}
-
-String to_string(const uint64_t)
-{
-    return "0";
-}
-
-}
-
+#ifdef DSTD_GLOBAL_INTS
 dstd::String operator"" _s(const char* str, [[maybe_unused]] uint32_t size)
+#else
+dstd::String operator"" _s(const char* str, [[maybe_unused]] dstd::uint32_t size)
+#endif
 {
     return dstd::String(str);
 }

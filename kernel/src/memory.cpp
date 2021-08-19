@@ -2,7 +2,7 @@
 
 // "injected" by linker
 extern uint8_t* __HEAP_SECTION_START;
-extern uint8_t* __DATA_SECTION_END;
+extern uint8_t* __HEAP_SECTION_END;
 
 uint32_t current_offset = 0;
 

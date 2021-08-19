@@ -16,6 +16,13 @@ SECTIONS
         *(.pmlt.*)
     }
 
+    .idt : ALIGN(4K)
+    {
+        __IDT_SECTION_START = .;
+        . += 0x100;
+        __IDT_SECTION_END = .;
+    }
+
     .text : ALIGN(4K)
     {
         *(.text)

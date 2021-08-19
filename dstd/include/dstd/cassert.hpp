@@ -1,5 +1,4 @@
 #pragma once
-#include "serial.hpp"
 
 #ifdef NDEBUG
 #define assert(cond) ((void)0)

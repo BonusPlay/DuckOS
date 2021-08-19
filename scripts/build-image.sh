@@ -35,7 +35,7 @@ cp ./grub.cfg "${tmpdir}/boot/grub/grub.cfg"
 echo "done"
 
 echo "Copying Image"
-cp ../build/DuckOS "${tmpdir}/boot/DuckOS"
+cp ../build/kernel/DuckOS "${tmpdir}/boot/DuckOS"
 echo "done"
 
 echo "Unmounting loopback device"
