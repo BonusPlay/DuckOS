@@ -6,11 +6,17 @@ if [ "$(id -u)" != 0 ]; then
     exit 1
 fi
 
+REPO_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )/.." &> /dev/null && pwd )"
+echo "repo dir set to ${REPO_DIR}"
+
+mkdir -p "${REPO_DIR}/build"
+IMAGE_PATH="${REPO_DIR}/build/duckOS.img"
+
 echo "Creating empty 100MB image"
-dd if=/dev/zero of=duckOS.img count=100 bs=1M
+dd if=/dev/zero of="${IMAGE_PATH}" count=100 bs=1M
 
 echo "Creating loopback device"
-dev=$(losetup --find --partscan --show duckOS.img)
+dev=$(losetup --find --partscan --show "${IMAGE_PATH}")
 echo "done, mounted at ${dev}"
 
 echo "Creating partition table"
@@ -31,11 +37,11 @@ echo "done"
 
 echo "Installing GRUB"
 grub-install --boot-directory="${tmpdir}/boot" --target=i386-pc --modules="ext2 part_msdos" "${dev}"
-cp ./grub.cfg "${tmpdir}/boot/grub/grub.cfg"
+cp "${REPO_DIR}/scripts/grub.cfg" "${tmpdir}/boot/grub/grub.cfg"
 echo "done"
 
 echo "Copying Image"
-cp ../build/kernel/DuckOS "${tmpdir}/boot/DuckOS"
+cp "${REPO_DIR}/build/kernel/DuckOS" "${tmpdir}/boot/DuckOS"
 echo "done"
 
 echo "Unmounting loopback device"
@@ -51,5 +57,5 @@ losetup -d "${dev}"
 echo "done"
 
 echo "chown image"
-sudo chown $SUDO_USER:$SUDO_USER ./duckOS.img
+sudo chown $SUDO_USER:$SUDO_USER "${IMAGE_PATH}"
 echo "done"

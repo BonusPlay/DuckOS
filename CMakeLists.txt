@@ -24,3 +24,14 @@ endif()
 if(${BUILD_TESTS})
     add_subdirectory(tests)
 endif()
+
+ADD_CUSTOM_TARGET(image
+        COMMAND sudo ${CMAKE_SOURCE_DIR}/scripts/build-image.sh
+        BYPRODUCTS ${CMAKE_BINARY_DIR}/duckOS.img
+        USES_TERMINAL
+)
+
+ADD_CUSTOM_TARGET(qemu-image
+        COMMAND ${CMAKE_SOURCE_DIR}/scripts/run-qemu-image.sh
+        USES_TERMINAL
+)
