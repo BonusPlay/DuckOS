@@ -51,9 +51,12 @@ void init()
      __asm__ ("lidt %0" :: "m"(ptr));
 }
 
-void interrupt_handler()
+void interrupt_handler(uint8_t interrupt_num, uint64_t error_code, void* interrupt_frame)
 {
     serial::println("Hello from interrupt");
+    serial::println(dstd::to_string(interrupt_num, 16));
+    serial::println(dstd::to_string(error_code, 16));
+    serial::println(dstd::addr_to_string(static_cast<void*>(interrupt_frame)));
 }
 
 }

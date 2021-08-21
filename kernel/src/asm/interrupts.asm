@@ -2,18 +2,95 @@
 [extern interrupt_handler]
 section .text
 
+%macro pushaq 0
+   push rax
+   push rbx
+   push rcx
+   push rdx
+   push rbp
+   push rdi
+   push rsi
+   push r8
+   push r9
+   push r10
+   push r11
+   push r12
+   push r13
+   push r14
+   push r15
+%endmacro
+
+%macro popaq 0
+   pop r15
+   pop r14
+   pop r13
+   pop r12
+   pop r11
+   pop r10
+   pop r9
+   pop r8
+   pop rsi
+   pop rdi
+   pop rbp
+   pop rdx
+   pop rcx
+   pop rbx
+   pop rax
+%endmacro
+
 %macro isr_stub 1
 isr_stub_%+%1:
-    call interrupt_handler
+    ; push fake exception code onto stack
+    ; credits to @chivay for this idea
+    push 0
+    ; push interrupt code
+    push %1
+    call isr_stub_common
+    ; cleanup stack
+    add rsp, 0x10
     iretq
 %endmacro
 
 %macro isr_err_stub 1
 isr_stub_%+%1:
-    call interrupt_handler
+    ; no need to push fake exception
+    ; push interrupt code
+    push %1
+    call isr_stub_common
+    ; cleanup stack
+    add rsp, 0x10
     iretq
 %endmacro
 
+isr_stub_common:
+    pushaq
+    ; 0x90 interrupt frame
+    ; 0x88 (fake) error code
+    ; 0x80 interrupt number
+    ; 0x78 ret addr to stub
+    ; 0x70 rax
+    ; 0x68 rbx
+    ; 0x60 rcx
+    ; 0x58 rdx
+    ; 0x50 rbp
+    ; 0x48 rdi
+    ; 0x40 rsi
+    ; 0x38 r8
+    ; 0x30 r9
+    ; 0x28 r10
+    ; 0x20 r11
+    ; 0x18 r12
+    ; 0x10 r13
+    ; 0x08 r14
+    ; 0x00 r15 <- rsp
+    mov rdi, [rsp + 0x80]
+    mov rsi, [rsp + 0x88]
+    lea rdx, [rsp + 0x90]
+    call interrupt_handler
+    popaq
+    ret
+
+; generate stubs
 isr_stub     0
 isr_stub     1
 isr_stub     2

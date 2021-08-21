@@ -67,6 +67,6 @@ struct IDTRegister
 void init();
 
 extern "C"
-void interrupt_handler();
+void interrupt_handler(uint8_t interrupt_num, uint64_t error_code, void* interrupt_frame);
 
 }
