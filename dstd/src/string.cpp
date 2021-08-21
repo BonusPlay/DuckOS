@@ -65,18 +65,21 @@ String& String::operator=(String&& other_)
 
 String::~String()
 {
-    delete[] this->raw_str_;
+    if (this->raw_str_)
+        delete[] this->raw_str_;
 }
 
 char& String::operator[](uint32_t index_)
 {
-    assert(index_ >= this->length_);
+    assert(index_ >= 0);
+    assert(index_ < this->length_);
     return this->raw_str_[index_];
 }
 
 const char& String::operator[](uint32_t index_) const
 {
-    assert(index_ >= this->length_);
+    assert(index_ >= 0);
+    assert(index_ < this->length_);
     return this->raw_str_[index_];
 }
 
@@ -103,9 +106,9 @@ bool operator==(const String& lhs, const String& rhs)
 }
 
 #ifdef DSTD_GLOBAL_INTS
-dstd::String operator"" _s(const char* str, [[maybe_unused]] uint32_t size)
+dstd::String operator"" _s(const char* str, [[maybe_unused]] uint64_t size)
 #else
-dstd::String operator"" _s(const char* str, [[maybe_unused]] dstd::uint32_t size)
+dstd::String operator"" _s(const char* str, [[maybe_unused]] dstd::uint64_t size)
 #endif
 {
     return dstd::String(str);

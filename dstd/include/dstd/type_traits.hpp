@@ -82,14 +82,6 @@ struct __is_integral_helper<uint16_t>
     : public true_type{};
 
 template<>
-struct __is_integral_helper<int32_t>
-    : public true_type{};
-
-template<>
-struct __is_integral_helper<uint32_t>
-    : public true_type{};
-
-template<>
 struct __is_integral_helper<int64_t>
     : public true_type{};
 

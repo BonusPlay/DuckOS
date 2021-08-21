@@ -1,21 +1,21 @@
 #include "memory.hpp"
 
 // "injected" by linker
-extern uint8_t* __HEAP_SECTION_START;
-extern uint8_t* __HEAP_SECTION_END;
+extern uint64_t _HEAP_START_;
+extern uint64_t _HEAP_END_;
 
 uint32_t current_offset = 0;
 
-void* operator new(uint32_t count)
+void* operator new(uint64_t count)
 {
-    auto ret = __HEAP_SECTION_START + current_offset;
+    auto ret = &_HEAP_START_ + current_offset;
     current_offset += count;
     return static_cast<void*>(ret);
 }
 
-void* operator new[](uint32_t count)
+void* operator new[](uint64_t count)
 {
-    auto ret = __HEAP_SECTION_START + current_offset;
+    auto ret = &_HEAP_START_ + current_offset;
     current_offset += count;
     return static_cast<void*>(ret);
 }

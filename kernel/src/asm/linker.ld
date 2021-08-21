@@ -18,9 +18,8 @@ SECTIONS
 
     .idt : ALIGN(4K)
     {
-        __IDT_SECTION_START = .;
-        . += 0x100;
-        __IDT_SECTION_END = .;
+        _IDT_TABLE_ = .;
+        . += (0x10 * 8 * 0x100);
     }
 
     .text : ALIGN(4K)
@@ -50,8 +49,8 @@ SECTIONS
 
     .heap : ALIGN(4K)
     {
-        __HEAP_SECTION_START = .;
+        _HEAP_START_ = .;
         . += 0x1000;
-        __HEAP_SECTION_END = .;
+        _HEAP_END_ = .;
     }
 }

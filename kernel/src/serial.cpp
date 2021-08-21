@@ -44,4 +44,10 @@ void print(const dstd::String& str)
         write_serial(str[i]);
 }
 
+void println(const dstd::String& str)
+{
+    print(str);
+    write_serial('\n');
+}
+
 }

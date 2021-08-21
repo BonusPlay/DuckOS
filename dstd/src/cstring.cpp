@@ -1,4 +1,5 @@
 #include "dstd/cstring.hpp"
+#include "dstd/cassert.hpp"
 
 namespace dstd
 {
@@ -50,16 +51,20 @@ void* memcpy(void* dest_, const void* src_, uint32_t count_)
     return original_dest;
 }
 
-void* memset(void* dest_, uint32_t value_, int32_t count_)
+void* memset(void* dest_, uint8_t value_, int64_t count_)
 {
-    void* original_dest = dest_;
-	__asm__(
-        ".intel_syntax;"
-        "rep stosb;"
-        : "=D" (dest_), "=c" (value_)
-        : "0" (dest_), "1" (value_), "a" (count_)
-        : "memory");
-	return original_dest;
+    /* void* original_dest = dest_;
+	 * __asm__(
+     *     ".intel_syntax;"
+     *     "rep stosb;"
+     *     : "=D" (dest_), "=c" (value_)
+     *     : "0" (dest_), "1" (value_), "a" (count_)
+     *     : "memory");
+	 * return original_dest; */
+    assert(count_ > 0);
+    for(uint64_t i = 0; i < count_; ++i)
+        *(static_cast<uint8_t*>(dest_) + i) = value_;
+    return dest_;
 }
 
 }

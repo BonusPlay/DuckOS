@@ -5,6 +5,9 @@ TEST_CASE("to_string", "[string]" ) {
     REQUIRE( dstd::to_string(-42) == "-42"_s );
     REQUIRE( dstd::to_string(123) == "123"_s );
     REQUIRE( dstd::to_string(42) == dstd::String("42") );
+
+    REQUIRE( dstd::to_string(128, 16) == "0x80"_s );
+    REQUIRE( dstd::to_string(-42, 16) == "-0x2A"_s );
 }
 
 TEST_CASE("string works", "[string]") {

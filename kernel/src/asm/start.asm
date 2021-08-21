@@ -37,7 +37,6 @@ _start:
 .end
 
 [bits 64]
-; [extern _init]
 section .text
 global _start64bit:function (_start64bit.end - _start64bit):
 _start64bit:

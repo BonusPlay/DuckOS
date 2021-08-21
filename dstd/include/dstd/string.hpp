@@ -29,22 +29,30 @@ private:
 };
 
 template<typename T>
-requires dstd::integral<T>
-String to_string(const T val_)
+requires integral<T>
+String to_string(const T val_, const uint8_t base = 10)
 {
     char buf[30];
-    const auto base = 10;
-    auto num = dstd::abs(val_);
+    auto num = abs(val_);
 
     if (val_ == 0)
         return String("0");
 
     auto i = 0;
+
     while (num != 0)
     {
         const auto remainder = num % base;
-        buf[i++] = remainder + '0';
-        num = num / 10;
+        buf[i++] = remainder > 9
+            ? remainder + 'A' - 10
+            : remainder + '0';
+        num = num / base;
+    }
+
+    if (base == 16)
+    {
+        buf[i++] = 'x';
+        buf[i++] = '0';
     }
 
     if (val_ < 0)
@@ -58,7 +66,7 @@ String to_string(const T val_)
     int start = 0;
     while (start < i)
     {
-        dstd::swap(*(buf + start), *(buf + i));
+        swap(*(buf + start), *(buf + i));
         start++;
         i--;
     }
@@ -66,12 +74,17 @@ String to_string(const T val_)
     return String(buf);
 }
 
+String addr_to_string(const auto* val_)
+{
+    return to_string(reinterpret_cast<uint64_t>(val_), 16);
+}
+
 bool operator==(const String&, const String&);
 
 }
 
 #ifdef DSTD_GLOBAL_INTS
-dstd::String operator "" _s(const char*, uint32_t);
+dstd::String operator "" _s(const char*, uint64_t);
 #else
-dstd::String operator "" _s(const char*, dstd::uint32_t);
+dstd::String operator "" _s(const char*, dstd::uint64_t);
 #endif
