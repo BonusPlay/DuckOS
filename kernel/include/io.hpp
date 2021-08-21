@@ -52,3 +52,14 @@ inline uint64_t rdmsr(uint64_t msr_id_)
 	);
     return (static_cast<uint64_t>(high) << 32) | low;
 }
+
+template<uint8_t num>
+inline void interrupt()
+{
+    static_assert(num <128,  "Interrupt has to be below 128");
+    asm (
+        "int %0"
+        :
+        : "N"(num)
+    );
+}
