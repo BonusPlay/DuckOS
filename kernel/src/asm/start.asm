@@ -49,11 +49,3 @@ _start64bit:
     call kmain
     hlt
 .end
-
-global _int_handler:
-_int_handler:
-    ; 0x10 == GDT.Data
-    mov ax, 0x10
-    mov gs, ax
-    mov dword [gs:0xB8000],') : '
-    hlt

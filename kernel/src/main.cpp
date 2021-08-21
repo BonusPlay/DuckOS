@@ -23,9 +23,11 @@ void kmain()
 
     idt::init();
 
+    serial::println("Hello before the interrupt");
+
     interrupt<0x01>();
 
-    serial::print("wtf\n");
+    serial::println("Hello after the interrupt");
 
     while(true)
     {};

@@ -45,8 +45,8 @@ struct IDTEntry
     uint32_t offset_3; // offset bits 32..63
     uint32_t zero;
 
-    uint64_t get_offset() const;
-    void set_offset(uint64_t offset_);
+    uint64_t* get_offset() const;
+    void set_offset(uint64_t* offset_);
 } __attribute__((packed));
 
 static_assert(sizeof(IDTEntry::offset_1) == 2);
@@ -65,5 +65,8 @@ struct IDTRegister
 } __attribute__((packed));
 
 void init();
+
+extern "C"
+void interrupt_handler();
 
 }
