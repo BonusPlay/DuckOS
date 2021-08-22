@@ -24,10 +24,10 @@ VirtAddr VirtAddr::from_addr(uint64_t* addr)
     VirtAddr ret{};
     const auto val = reinterpret_cast<uint64_t>(addr);
     ret.page_offset = val & 0xFFF;
-    ret.pml1t_offset = val & (static_cast<uint64_t>(0x1FF) << 12);
-    ret.pml2t_offset = val & (static_cast<uint64_t>(0x1FF) << 21);
-    ret.pml3t_offset = val & (static_cast<uint64_t>(0x1FF) << 30);
-    ret.pml4t_offset = val & (static_cast<uint64_t>(0x1FF) << 39);
+    ret.pml1t_offset = (val & (static_cast<uint64_t>(0x1FF) << 12)) >> 12;
+    ret.pml2t_offset = (val & (static_cast<uint64_t>(0x1FF) << 21)) >> 21;
+    ret.pml3t_offset = (val & (static_cast<uint64_t>(0x1FF) << 30)) >> 30;
+    ret.pml4t_offset = (val & (static_cast<uint64_t>(0x1FF) << 39)) >> 39;
     ret.sign_extend = val >> 48;
     return ret;
 }
