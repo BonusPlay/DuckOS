@@ -1,5 +1,6 @@
 #pragma once
-#include "dstd/cstdint.hpp"
+#include <dstd/cstdint.hpp>
+#include "interrupts.hpp"
 
 // IDT => Interrupt Descriptor Table
 

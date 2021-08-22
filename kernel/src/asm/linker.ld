@@ -12,6 +12,9 @@ SECTIONS
 
     .pmlt : ALIGN(4K)
     {
+        _PML4T_TABLE_ = .;
+        _PML3T_TABLE_ = . + 0x1000;
+        _PML2T_TABLE_ = . + 0x2000;
         *(.pmlt)
         *(.pmlt.*)
     }

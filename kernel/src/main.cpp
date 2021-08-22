@@ -4,6 +4,8 @@
 #include "idt.hpp"
 #include "io.hpp"
 #include "cursed/apic.hpp"
+#include "utility.hpp"
+#include "paging.hpp"
 
 [[noreturn]]
 // cppcheck-suppress unusedFunction
@@ -22,7 +24,7 @@ void kmain()
  *     vga::set_color(vga::Color::GREEN);
  *     vga::print("Nawet kolorki\n"); */
 
-    /* idt::init(); */
+    idt::init();
 
     /* serial::println("Hello before the interrupt"); */
 

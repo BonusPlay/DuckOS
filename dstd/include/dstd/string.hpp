@@ -36,7 +36,11 @@ String to_string(const T val_, const uint8_t base = 10)
     auto num = abs(val_);
 
     if (val_ == 0)
+    {
+        if (base == 16)
+            return String("0x0");
         return String("0");
+    }
 
     auto i = 0;
 

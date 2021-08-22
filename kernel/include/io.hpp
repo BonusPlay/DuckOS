@@ -88,3 +88,22 @@ inline cpuid_regs cpuid(uint32_t num)
     );
     return ret;
 }
+
+inline uint64_t get_cr3()
+{
+    uint64_t cr3;
+    asm volatile (
+        "mov %%cr3, %0;"
+        : "=r" (cr3)
+    );
+    return cr3;
+}
+
+inline void set_cr3(uint64_t val)
+{
+    asm (
+        "mov %0, %%cr3;"
+        :
+        : "r" (val)
+    );
+}

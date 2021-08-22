@@ -53,10 +53,16 @@ void init()
 
 void interrupt_handler(uint8_t interrupt_num, uint64_t error_code, void* interrupt_frame)
 {
-    serial::println("Hello from interrupt");
+    serial::println("=== INTERRUPT ===");
+    serial::print("Number: ");
     serial::println(dstd::to_string(interrupt_num, 16));
+    serial::print("Error code: ");
     serial::println(dstd::to_string(error_code, 16));
+    serial::print("Frame addr: ");
     serial::println(dstd::addr_to_string(static_cast<void*>(interrupt_frame)));
+    serial::println("=== INTERRUPT ===");
+
+    __asm__ ("hlt;");
 }
 
 }

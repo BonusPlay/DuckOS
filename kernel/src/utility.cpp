@@ -1,6 +1,11 @@
 #include "utility.hpp"
 #include "serial.hpp"
 
+void dump_memory(uint64_t addr_from, uint64_t addr_to)
+{
+    dump_memory(reinterpret_cast<uint8_t*>(addr_from), reinterpret_cast<uint8_t*>(addr_to));
+}
+
 void dump_memory(uint8_t* addr_from, uint8_t* addr_to)
 {
     for (uint8_t* addr_curr = addr_from; addr_curr < addr_to; ++addr_curr)
@@ -14,4 +19,5 @@ void dump_memory(uint8_t* addr_from, uint8_t* addr_to)
         serial::print(dstd::to_string(*addr_curr, 16));
         serial::print(" ");
     }
+    serial::print("\n");
 }
