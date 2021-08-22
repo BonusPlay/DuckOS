@@ -2,6 +2,7 @@
 #include <dstd/cstdint.hpp>
 
 constexpr uint32_t MSR_IA32_EFER = 0xC0000080;
+constexpr uint32_t MSR_IA32_APIC_BASE = 0x1B;
 
 inline void out(uint16_t port, uint8_t val)
 {
@@ -62,4 +63,28 @@ inline void interrupt()
         :
         : "N"(num)
     );
+}
+
+struct cpuid_regs
+{
+    uint32_t eax;
+    uint32_t ebx;
+    uint32_t ecx;
+    uint32_t edx;
+};
+
+inline cpuid_regs cpuid(uint32_t num)
+{
+    auto ret = cpuid_regs{};
+    asm (
+        "mov eax, %0;"
+        "cpuid;"
+        "mov %0, eax;"
+        "mov %1, ebx;"
+        "mov %2, ecx;"
+        "mov %3, edx;"
+        : "=r" (ret.eax), "=r" (ret.ebx), "=r" (ret.ecx), "=r" (ret.edx)
+        : "0" (num)
+    );
+    return ret;
 }

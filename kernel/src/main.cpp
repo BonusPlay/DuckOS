@@ -3,6 +3,7 @@
 #include "serial.hpp"
 #include "idt.hpp"
 #include "io.hpp"
+#include "cursed/apic.hpp"
 
 [[noreturn]]
 // cppcheck-suppress unusedFunction
@@ -21,13 +22,15 @@ void kmain()
  *     vga::set_color(vga::Color::GREEN);
  *     vga::print("Nawet kolorki\n"); */
 
-    idt::init();
+    /* idt::init(); */
 
-    serial::println("Hello before the interrupt");
+    /* serial::println("Hello before the interrupt"); */
 
-    interrupt<0x01>();
+    /* interrupt<0x01>(); */
 
-    serial::println("Hello after the interrupt");
+    /* serial::println("Hello after the interrupt"); */
+
+    apic::init();
 
     while(true)
     {};
