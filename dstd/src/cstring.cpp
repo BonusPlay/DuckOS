@@ -62,7 +62,7 @@ void* memset(void* dest_, uint8_t value_, int64_t count_)
      *     : "memory");
 	 * return original_dest; */
     assert(count_ > 0);
-    for(uint64_t i = 0; i < count_; ++i)
+    for(int64_t i = 0; i < count_; ++i)
         *(static_cast<uint8_t*>(dest_) + i) = value_;
     return dest_;
 }

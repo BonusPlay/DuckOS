@@ -51,7 +51,7 @@ void init()
      __asm__ ("lidt %0" :: "m"(ptr));
 }
 
-void interrupt_handler(uint8_t interrupt_num, uint64_t error_code, void* interrupt_frame)
+void interrupt_handler(uint8_t interrupt_num, uint64_t error_code, interrupts::Frame* interrupt_frame)
 {
     serial::println("=== INTERRUPT ===");
     serial::print("Number: ");

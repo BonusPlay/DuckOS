@@ -1,3 +1,3 @@
 target remote localhost:1234
-symbol-file ~/dev/duck-os/build/kernel/DuckOS
+symbol-file ./build/kernel/DuckOS
 set pagination off

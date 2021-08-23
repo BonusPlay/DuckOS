@@ -18,4 +18,10 @@ void swap(T& t1, T& t2)
     t2 = move(temp);
 }
 
+template< class T >
+constexpr T&& forward( dstd::remove_reference_t<T>& t ) noexcept;
+
+template< class T >
+constexpr T&& forward( dstd::remove_reference_t<T>&& t ) noexcept;
+
 }

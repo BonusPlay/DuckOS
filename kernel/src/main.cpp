@@ -5,7 +5,7 @@
 #include "io.hpp"
 #include "cursed/apic.hpp"
 #include "utility.hpp"
-#include "paging.hpp"
+#include "memory/paging.hpp"
 
 [[noreturn]]
 // cppcheck-suppress unusedFunction
@@ -25,6 +25,7 @@ void kmain()
  *     vga::print("Nawet kolorki\n"); */
 
     idt::init();
+    memory::init();
 
     /* serial::println("Hello before the interrupt"); */
 

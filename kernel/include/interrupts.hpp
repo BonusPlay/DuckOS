@@ -4,6 +4,15 @@
 namespace interrupts
 {
 
+struct Frame
+{
+    uint16_t ip;
+    uint16_t cs;
+    uint16_t flags;
+    uint16_t sp;
+    uint16_t ss;
+};
+
 enum class Interrupt : uint8_t
 {
     DIVIDE_BY_ZERO = 0x0,

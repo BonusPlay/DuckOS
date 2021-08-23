@@ -1,4 +1,4 @@
-#include "memory.hpp"
+#include "heap.hpp"
 
 // "injected" by linker
 extern uint64_t _HEAP_START_;
