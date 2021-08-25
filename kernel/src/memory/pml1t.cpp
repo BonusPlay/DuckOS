@@ -7,13 +7,13 @@ namespace memory
 
 void PML1Table::fill(const PhysicalAddress& start_addr)
 {
-    volatile auto self_addr = (reinterpret_cast<uint64_t>(this) >> 12) << 12;
+    auto self_addr = (reinterpret_cast<uint64_t>(this) >> 12) << 12;
     auto& self = *reinterpret_cast<PML1Table*>(self_addr);
 
     for (uint64_t i = 0; i < 0x200; ++i)
     {
         auto& entry = self.entries[i];
-        entry.set_addr(static_cast<PhysicalAddress>(static_cast<uint64_t>(start_addr) + 0x1000 * i));
+        entry.set_addr(static_cast<PhysicalAddress>(start_addr + 0x1000 * i));
         entry.preset = true;
         entry.read_write = true;
     }

@@ -28,4 +28,12 @@ inline bool operator==(const memory::PhysicalAddress& lhs, const memory::Physica
     return lhs.addr == rhs.addr;
 }
 
-memory::PhysicalAddress operator "" _p (unsigned long long addr);
+inline memory::PhysicalAddress operator "" _p (unsigned long long addr)
+{
+    return memory::PhysicalAddress{addr};
+}
+
+inline memory::PhysicalAddress operator+(const memory::PhysicalAddress& addr, uint64_t offset)
+{
+    return memory::PhysicalAddress{reinterpret_cast<uint64_t>(addr.addr) + offset};
+}

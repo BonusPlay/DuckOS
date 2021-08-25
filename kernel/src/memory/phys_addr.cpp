@@ -16,13 +16,3 @@ constexpr PhysicalAddress::PhysicalAddress(uint64_t* addr_)
  * {} */
 
 }
-
-/* inline bool operator==(const memory::PhysicalAddress& lhs, const memory::PhysicalAddress& rhs)
- * {
- *     return lhs.addr == rhs.addr;
- * } */
-
-memory::PhysicalAddress operator "" _p (unsigned long long addr)
-{
-    return memory::PhysicalAddress{addr};
-}

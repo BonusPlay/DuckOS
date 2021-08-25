@@ -6,9 +6,9 @@ namespace memory
 
 struct PML2Table
 {
-    void insert_pml1t(uint32_t index, PML1Table* addr)
+    void insert_pml1t(uint32_t index, PhysicalAddress addr)
     {
-        const auto table_addr = (reinterpret_cast<uint64_t>(addr) | 0x23);
+        const auto table_addr = (static_cast<uint64_t>(addr) | 0x23);
         entries[index] = reinterpret_cast<PML1Table*>(table_addr);
     }
 

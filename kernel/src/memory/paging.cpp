@@ -12,9 +12,8 @@ void init()
 {
     // manually map 4kb which we're going to be using to place tables at
     init_table.fill(0x300000_p);
-    for (auto& entry : init_table.entries)
-        serial::println(dstd::to_string(static_cast<uint64_t>(entry.get_addr()), 16));
-    _PML2T_TABLE_.insert_pml1t(0x1, &init_table);
+    // this is ok because 0-2MB are identity mapped
+    _PML2T_TABLE_.insert_pml1t(0x1, PhysicalAddress(&init_table));
 }
 
 VirtualAddress map_4kb(const PhysicalAddress& phys_addr)
@@ -31,10 +30,20 @@ VirtualAddress map_4kb(const PhysicalAddress& phys_addr)
 
     // create new pml1t
     const auto offset = _PML2T_TABLE_.next_free_entry();
+
     // page tables at 2MB - 4MB
-    auto pml1t = reinterpret_cast<PML1Table*>(0x200000 + offset * sizeof(PML1Table));
+    // 2 page tables aren't at 2MB, one from asm, one from init_table
+    // and they need to be aligned at 4k
+    auto pml1t = reinterpret_cast<PML1Table*>(0x200000 + (offset - 2) * 0x1000);
+
     pml1t->fill(phys_addr);
-    _PML2T_TABLE_.insert_pml1t(offset, pml1t);
+    _PML2T_TABLE_.insert_pml1t(offset, 0x300000_p + (offset - 2) * 0x1000);
+
+    serial::print("Memory mapped ");
+    serial::print(dstd::addr_to_string(phys_addr.addr));
+    serial::print("_p => ");
+    serial::print(dstd::to_string(0x200000 * offset, 16));
+    serial::print("_v\n");
 
     return VirtualAddress(0x200000 * offset);
 }
