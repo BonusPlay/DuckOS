@@ -5,6 +5,8 @@
 namespace memory
 {
 
+// Note - this struct expects to be properly placed in memory
+// which is easy to break because of flags moving the offset
 struct PageEntry
 {
     bool preset : 1;
