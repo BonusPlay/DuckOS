@@ -9,8 +9,10 @@ struct PhysicalAddress
     void* addr;
 
     // note: some voodoo black magic forbits this from being constexpr
-    explicit PhysicalAddress(uint64_t addr_);
-    explicit constexpr PhysicalAddress(uint64_t* addr_);
+    explicit PhysicalAddress(uint64_t addr_)
+        : addr(reinterpret_cast<void*>(addr_))
+    {}
+
     explicit constexpr PhysicalAddress(void* addr_)
         : addr(addr_)
     {}
@@ -33,7 +35,7 @@ inline memory::PhysicalAddress operator "" _p (unsigned long long addr)
     return memory::PhysicalAddress{addr};
 }
 
-inline memory::PhysicalAddress operator+(const memory::PhysicalAddress& addr, uint64_t offset)
+inline memory::PhysicalAddress operator+(const memory::PhysicalAddress& phys, uint64_t offset)
 {
-    return memory::PhysicalAddress{reinterpret_cast<uint64_t>(addr.addr) + offset};
+    return memory::PhysicalAddress{reinterpret_cast<uint64_t>(phys.addr) + offset};
 }

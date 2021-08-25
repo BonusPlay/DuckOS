@@ -12,7 +12,7 @@ struct PML1Table
 
     bool present() const;
     PhysicalAddress base_phys_addr() const;
-    VirtualAddress base_virt_addr() const;
+    VirtualAddress<void> base_virt_addr() const;
 
 // TODO: private
 //private:

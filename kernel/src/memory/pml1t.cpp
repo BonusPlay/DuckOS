@@ -27,12 +27,12 @@ PhysicalAddress PML1Table::base_phys_addr() const
     return PhysicalAddress{self.entries[0].get_addr()};
 }
 
-VirtualAddress PML1Table::base_virt_addr() const
+VirtualAddress<void> PML1Table::base_virt_addr() const
 {
     for (uint64_t i = 0; i < 0x200; ++i)
     {
         if (_PML2T_TABLE_[i] == reinterpret_cast<uint64_t>(this))
-            return 0x200000_v;
+            return VirtualAddress{0x200000 * i};
     }
 
     // TODO: assert here

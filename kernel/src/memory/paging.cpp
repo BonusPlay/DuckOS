@@ -16,7 +16,7 @@ void init()
     _PML2T_TABLE_.insert_pml1t(0x1, PhysicalAddress(&init_table));
 }
 
-VirtualAddress map_4kb(const PhysicalAddress& phys_addr)
+VirtualAddress<void> map_4kb(const PhysicalAddress& phys_addr)
 {
     // check if not already mapped
     for (const auto& pml2t_entry : _PML2T_TABLE_.entries)
@@ -45,7 +45,7 @@ VirtualAddress map_4kb(const PhysicalAddress& phys_addr)
     serial::print(dstd::to_string(0x200000 * offset, 16));
     serial::print("_v\n");
 
-    return VirtualAddress(0x200000 * offset);
+    return VirtualAddress(static_cast<uint64_t>(0x200000 * offset));
 }
 
 /* PhysicalAddress virt_to_phys(const VirtualAddress& virt_addr)

@@ -1,7 +1,7 @@
 #pragma once
 #include <dstd/cstdint.hpp>
 
-namespace apic
+namespace acpi
 {
 
 void init();

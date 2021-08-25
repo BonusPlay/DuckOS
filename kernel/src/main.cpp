@@ -3,8 +3,8 @@
 #include "serial.hpp"
 #include "idt.hpp"
 #include "io.hpp"
-#include "cursed/apic.hpp"
 #include "utility.hpp"
+#include "acpi/apic.hpp"
 #include "memory/paging.hpp"
 
 [[noreturn]]
@@ -33,7 +33,7 @@ void kmain()
 
     /* serial::println("Hello after the interrupt"); */
 
-    apic::init();
+    acpi::init();
 
     while(true)
     {};

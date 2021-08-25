@@ -10,16 +10,16 @@ struct integral_constant
     static constexpr T value = v;
     using value_type = T;
     using type = integral_constant;
-    constexpr operator value_type() const noexcept { return value; }
-    constexpr value_type operator()() const noexcept { return value; }
+    constexpr operator value_type() const { return value; }
+    constexpr value_type operator()() const { return value; }
 };
 
 using true_type = integral_constant<bool, true>;
 using false_type = integral_constant<bool, false>;
 
-template< class T > struct remove_reference      {typedef T type;};
-template< class T > struct remove_reference<T&>  {typedef T type;};
-template< class T > struct remove_reference<T&&> {typedef T type;};
+template< class T > struct remove_reference      { typedef T type; };
+template< class T > struct remove_reference<T&>  { typedef T type; };
+template< class T > struct remove_reference<T&&> { typedef T type; };
 
 template< class T >
 using remove_reference_t = typename remove_reference<T>::type;
@@ -44,20 +44,21 @@ template< class T > struct remove_volatile<volatile T> { typedef T type; };
 template< class T >
 using remove_volatile_t = typename remove_volatile<T>::type;
 
-template<typename>
-struct __is_void_helper
-    : public false_type
+template<class T, class U>
+struct is_same : false_type {};
+
+template<class T>
+struct is_same<T, T> : true_type {};
+
+template< class T, class U >
+inline constexpr bool is_same_v = is_same<T, U>::value;
+
+template< class T >
+struct is_void : is_same<void, typename remove_cv<T>::type>
 {};
 
-template<>
-struct __is_void_helper<void>
-    : public true_type
-{};
-
-template<typename _Tp>
-struct is_void
-    : public __is_void_helper<typename remove_cv<_Tp>::type>::type
-{};
+template< class T >
+inline constexpr bool is_void_v = is_void<T>::value;
 
 template<typename>
 struct __is_integral_helper
@@ -127,5 +128,14 @@ template <class T> struct is_volatile<volatile T> : true_type {};
 
 template< class T >
 inline constexpr bool is_volatile_v = is_volatile<T>::value;
+
+template<bool B, class T = void>
+struct enable_if {};
+
+template<class T>
+struct enable_if<true, T> { typedef T type; };
+
+template< bool B, class T = void >
+using enable_if_t = typename enable_if<B,T>::type;
 
 }
