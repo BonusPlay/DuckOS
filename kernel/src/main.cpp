@@ -5,6 +5,7 @@
 #include "io.hpp"
 #include "utility.hpp"
 #include "acpi/apic.hpp"
+#include "acpi/rsdt.hpp"
 #include "memory/paging.hpp"
 
 [[noreturn]]
@@ -33,7 +34,8 @@ void kmain()
 
     /* serial::println("Hello after the interrupt"); */
 
-    acpi::init();
+    acpi::apic_init();
+    acpi::rsdt_test();
 
     while(true)
     {};

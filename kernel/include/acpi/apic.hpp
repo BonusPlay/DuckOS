@@ -4,6 +4,6 @@
 namespace acpi
 {
 
-void init();
+void apic_init();
 
 }

@@ -36,7 +36,7 @@ void init_spurious_register(const memory::VirtualAddress<uint32_t>& apic_virt)
     *(reg_addr.val) = 0xF0;
 }
 
-void init()
+void apic_init()
 {
     serial::println("apic::init()");
 

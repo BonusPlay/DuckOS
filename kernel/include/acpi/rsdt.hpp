@@ -2,9 +2,9 @@
 
 // Root System Description Table
 // https://wiki.osdev.org/RSDT
-namespace rsdt
+namespace acpi
 {
 
-void test();
+void rsdt_test();
 
 }
