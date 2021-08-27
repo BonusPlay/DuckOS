@@ -11,12 +11,6 @@ TEST_CASE("vector", "[vector]") {
     a.reserve(5);
 
     REQUIRE( a.capacity() == 5 );
-    REQUIRE( a.empty() == true );
-    REQUIRE( a.size() == 0 );
-
-    a.push_back(1337);
-
-    REQUIRE( a.capacity() == 5 );
     REQUIRE( a.empty() == false );
-    REQUIRE( a.size() == 1 );
+    REQUIRE( a.size() == 5 );
 }
