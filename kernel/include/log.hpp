@@ -34,6 +34,8 @@ const auto print_wrap = [](const auto& self, auto&& elem, auto&&... rest)
     serial::print(" ");
     if constexpr (sizeof...(rest) > 0)
         self(self, rest...);
+    else
+        serial::print("\n");
 };
 
 // linker breaks if you move this to .cpp
