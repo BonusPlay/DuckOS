@@ -6,7 +6,6 @@
 #include "serial.hpp"
 
 // "injected" by linker
-extern "C" void _int_handler();
 extern uint64_t* _ISR_STUB_TABLE_[32];
 extern idt::IDTEntry _IDT_TABLE_[0x100];
 

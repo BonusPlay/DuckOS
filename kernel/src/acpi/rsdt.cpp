@@ -3,33 +3,60 @@
 #include <dstd/cstring.hpp>
 #include "serial.hpp"
 #include "memory/phys_addr.hpp"
+#include "memory/paging.hpp"
+#include "multiboot2.hpp"
 
 namespace acpi
 {
-const constexpr char* RSDP_MAGIC = "RSD PTR ";
 
-memory::PhysicalAddress find_pointer(memory::PhysicalAddress addr_from, memory::PhysicalAddress addr_to)
+memory::VirtualAddress<RSDTable> RSDTable::get()
 {
-    for(auto* cur_addr = static_cast<char*>(addr_from.addr); cur_addr < addr_to.addr; ++cur_addr)
-    {
-        if (*cur_addr == RSDP_MAGIC[0])
-        {
-            if (dstd::strcmp(reinterpret_cast<const char*>(cur_addr), RSDP_MAGIC) == 0)
-                return memory::PhysicalAddress{static_cast<void*>(cur_addr)};
-        }
-    }
-    return memory::PhysicalAddress{nullptr};
+    const auto& rsdp = RSDPDescriptor::get();
+
+    serial::print("rsdt addr: ");
+    serial::println(dstd::to_string(rsdp.RsdtAddress, 16));
+
+    auto start_addr = (rsdp.RsdtAddress) & ~0xFFF;
+    auto page_virt = memory::map_4kb(memory::PhysicalAddress{start_addr});
+
+    // 0x1FFE18FE
+    return (page_virt + (rsdp.RsdtAddress & 0xFFF)).as<RSDTable>();
 }
+
+memory::VirtualAddress<ACPISDTHeader> RSDTable::get_table(const dstd::String& signature)
+{
+    assert(signature.length() == 4, "invalid signature length");
+    auto table_count = (this->header.Length - sizeof(header)) / 4;
+    serial::print("table count: ");
+    serial::println(dstd::to_string(table_count));
+
+    for (uint32_t i = 0; i < table_count; ++i)
+    {
+        const auto table_phys = memory::PhysicalAddress{this->table_ptrs[i]};
+        const auto page_virt = memory::map_4kb(memory::PhysicalAddress{reinterpret_cast<uint64_t>(table_phys.addr) & static_cast<uint64_t>(~0xFFFF)});
+        const auto table_virt = (page_virt + (reinterpret_cast<uint64_t>(table_phys.addr) & 0xFFFF)).as<ACPISDTHeader>();
+        if (dstd::memcmp(table_virt->Signature, signature.data(), 4) == 0)
+            return table_virt;
+    }
+    return memory::VirtualAddress<ACPISDTHeader>{nullptr};
+}
+
+RSDPDescriptor& RSDPDescriptor::get()
+{
+    auto* old_acpi_tag = multiboot2::get_tag<multiboot2::TagAcpi>(multiboot2::TagType::ACPI_OLD);
+    assert(old_acpi_tag, "New ACPI not supported");
+    return *reinterpret_cast<RSDPDescriptor*>(old_acpi_tag->rsdp);
+}
+
+
 
 void rsdt_test()
 {
-    auto addr_1 = find_pointer(0x00000000_p, 0x00000400_p);
-    serial::print("RSDP: ");
-    serial::println(dstd::addr_to_string(addr_1.addr));
-
-    auto addr_2 = find_pointer(0x000E0000_p, 0x000FFFFF_p);
-    serial::print("RSDP: ");
-    serial::println(dstd::addr_to_string(addr_2.addr));
+    auto rsdt = RSDTable::get();
+    auto madt = rsdt->get_table(dstd::String{"APIC", 4});
+    serial::print("madt addr: ");
+    serial::println(dstd::addr_to_string(madt.val));
+    return;
 }
 
 }

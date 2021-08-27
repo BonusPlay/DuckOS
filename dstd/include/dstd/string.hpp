@@ -11,6 +11,8 @@ class String
 public:
     // cppcheck-suppress noExplicitConstructor
     String(const char*);
+    String(const char*, uint32_t len);
+
     String(const String&);
     String(String&&);
     String& operator=(const String&);

@@ -1,8 +1,8 @@
 #pragma once
 
 #ifdef NDEBUG
-#define assert(cond) ((void)0)
+#define assert(cond, info) ((void)0)
 #else
 // TODO: print to screen
-#define assert(cond) ((void)0) //__FUNCTION__
+#define assert(cond, info) ((void)0) //__FUNCTION__
 #endif

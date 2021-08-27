@@ -1,8 +1,5 @@
 #pragma once
 
-extern "C" {
-
+extern "C"
 [[noreturn]]
-void kmain();
-
-}
+void kmain(void* mb2_struct);

@@ -40,6 +40,26 @@ int32_t strcmp(const char* lhs, const char* rhs)
         : -1;
 }
 
+int32_t memcmp(const void* lhs_, const void* rhs_, uint64_t count_)
+{
+    const auto* lhs = static_cast<const uint8_t*>(lhs_);
+    const auto* rhs = static_cast<const uint8_t*>(rhs_);
+
+    for (uint64_t i = 0; i < count_; ++i)
+    {
+        const auto left = *(lhs + i);
+        const auto right = *(rhs + i);
+        if (left != right)
+        {
+            return left > right
+                ? 1
+                : -1;
+        }
+    }
+
+    return 0;
+}
+
 void* memcpy(void* dest_, const void* src_, uint32_t count_)
 {
     void* original_dest = dest_;
@@ -61,7 +81,7 @@ void* memset(void* dest_, uint8_t value_, int64_t count_)
      *     : "0" (dest_), "1" (value_), "a" (count_)
      *     : "memory");
 	 * return original_dest; */
-    assert(count_ > 0);
+    assert(count_ > 0, "Invalid cound passed to memset");
     for(int64_t i = 0; i < count_; ++i)
         *(static_cast<uint8_t*>(dest_) + i) = value_;
     return dest_;

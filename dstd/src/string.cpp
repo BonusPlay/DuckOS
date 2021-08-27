@@ -17,6 +17,17 @@ String::String(const char* str)
     strcpy(this->raw_str_, str, size);
 }
 
+String::String(const char* str, uint32_t len)
+{
+    assert(len <= strlen(str), "specified string len is shorter than buffer");
+    this->length_ = len;
+    const auto size = this->length_ == 0
+        ? 0
+        : this->length_ + 1;
+    this->raw_str_ = new char[size];
+    strcpy(this->raw_str_, str, size);
+}
+
 String::String(const String& other)
 {
     this->length_ = other.length_;
@@ -71,15 +82,15 @@ String::~String()
 
 char& String::operator[](uint32_t index_)
 {
-    assert(index_ >= 0);
-    assert(index_ < this->length_);
+    assert(index_ >= 0, "Index of element cannot be negative");
+    assert(index_ < this->length_, "index oob");
     return this->raw_str_[index_];
 }
 
 const char& String::operator[](uint32_t index_) const
 {
-    assert(index_ >= 0);
-    assert(index_ < this->length_);
+    assert(index_ >= 0, "Index of element cannot be negative");
+    assert(index_ < this->length_, "index oob");
     return this->raw_str_[index_];
 }
 

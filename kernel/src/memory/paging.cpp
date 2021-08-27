@@ -18,6 +18,7 @@ void init()
 
 VirtualAddress<void> map_4kb(const PhysicalAddress& phys_addr)
 {
+    // TODO: this doesn't work
     // check if not already mapped
     for (const auto& pml2t_entry : _PML2T_TABLE_.entries)
     {

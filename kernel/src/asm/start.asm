@@ -1,16 +1,44 @@
 [bits 32]
 
-MBALIGN  equ  1 << 0            ; align loaded modules on page boundaries
-MEMINFO  equ  1 << 1            ; provide memory map
-FLAGS    equ  MBALIGN | MEMINFO ; this is the Multiboot 'flag' field
-MAGIC    equ  0x1BADB002        ; 'magic number' lets bootloader find the header
-CHECKSUM equ -(MAGIC + FLAGS)   ; checksum of above, to prove we are multiboot
- 
+MAGIC    equ 0xE85250D6
+ARCH     equ 0x0 ; 32b protected mode i386
+MBLEN    equ multiboot_header_end - multiboot_header_end
+CHECKSUM equ -(MAGIC + ARCH + MBLEN)
+
+FLAGS_NONE equ 0x0
+
 section .multiboot
-align 4
+align 8
+multiboot_header_start:
     dd MAGIC
-    dd FLAGS
+    dd ARCH
+    dd MBLEN
     dd CHECKSUM
+multiboot_header_end:
+    ; 3.1.11 Module alignment tag
+    ;     +-------------------+
+    ; u16 | type = 6          |
+    ; u16 | flags             |
+    ; u32 | size = 8          |
+    ;     +-------------------+
+    align 8
+    dw 6
+    dw FLAGS_NONE
+    dd 8
+    ;     +-------------------+
+    ; u32 | type = 15         |
+    ; u32 | size              |
+    ;     | copy of RSDPv2    |
+    ;     +-------------------+
+    ; align 8
+    ; dw 14
+    ; dd 8
+    ; NOTE: I grub2 fails to boot with "unsupported tag" message
+    ; if this tag is defined, but still provides it on boot, so welp
+    ; end tag
+    align 8
+    dw 0
+    dw 8
 
 section .bss
 align 16
@@ -23,17 +51,19 @@ global _start:function (_start.end - _start)
 _start:
     mov esp, stack_top
 
+    ; reset flags
+    push 0
+    popf
+
+    ; push pointer to multiboot2 information structure
+    push ebx
+
     [extern _setup_paging]
     call _setup_paging
 
+    ; _setup_gdt jumps to _start64bit
     [extern _setup_gdt]
     jmp _setup_gdt
-
-    ; call _init
-    ; [extern kmain]
-    ; call kmain
-    ; cli
-    ; jmp $
 .end
 
 [bits 64]
@@ -45,6 +75,8 @@ _start64bit:
     mov fs, ax                    ; Set the F-segment to the A-register.
     mov gs, ax                    ; Set the G-segment to the A-register.
     mov ss, ax                    ; Set the stack segment to the A-register.
+    ; move multiboot2 info structure to first param
+    pop rdi
     [extern kmain]
     call kmain
     hlt
