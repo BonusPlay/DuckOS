@@ -44,10 +44,7 @@ void kmain(void* mb2_struct)
 
     auto rsdt = acpi::RSDTable::get();
     auto madt = rsdt->get_table(dstd::String{"APIC", 4}).as<acpi::MADTable>();
-    serial::print("madt addr: ");
-    serial::println(dstd::addr_to_string(madt.val));
-    log::info("sig", madt->Signature, "len", madt->Length, "rev", madt->Revision, "checksum", madt->Checksum);
-    log::info("lapic addr", madt->lapic_addr, "flags", madt->flags);
+    test_madt(madt);
 
     while(true)
     {};

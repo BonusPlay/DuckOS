@@ -12,6 +12,6 @@ struct MADTable : ACPISDT
     uint32_t flags;
 };
 
-void test_madt();
+void test_madt(memory::VirtualAddress<MADTable> madt);
 
 }

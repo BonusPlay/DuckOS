@@ -51,6 +51,12 @@ struct VirtualAddress
     {
         return VirtualAddress<U>(static_cast<U*>(this->val));
     }
+
+    template<typename U>
+    constexpr VirtualAddress<U> force_as() const
+    {
+        return VirtualAddress<U>(reinterpret_cast<U*>(this->val));
+    }
 };
 
 }
