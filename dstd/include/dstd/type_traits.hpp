@@ -44,6 +44,14 @@ template< class T > struct remove_volatile<volatile T> { typedef T type; };
 template< class T >
 using remove_volatile_t = typename remove_volatile<T>::type;
 
+template< class T >
+struct remove_cvref {
+    typedef remove_cv_t<remove_reference_t<T>> type;
+};
+
+template< class T >
+using remove_cvref_t = typename remove_cvref<T>::type;
+
 template<class T, class U>
 struct is_same : false_type {};
 
@@ -128,6 +136,66 @@ template <class T> struct is_volatile<volatile T> : true_type {};
 
 template< class T >
 inline constexpr bool is_volatile_v = is_volatile<T>::value;
+
+template<class T>
+struct is_array : false_type {};
+ 
+template<class T>
+struct is_array<T[]> : true_type {};
+ 
+template<class T, uint64_t N>
+struct is_array<T[N]> : true_type {};
+
+template< class T >
+inline constexpr bool is_array_v = is_array<T>::value;
+
+template<class T>
+struct is_function : integral_constant<
+    bool,
+    !is_const<const T>::value && !is_reference<T>::value
+> {};
+
+template< class T >
+inline constexpr bool is_function_v = is_function<T>::value;
+
+template<class T>
+struct remove_extent { typedef T type; };
+
+template<class T>
+struct remove_extent<T[]> { typedef T type; };
+
+template<class T, uint64_t N>
+struct remove_extent<T[N]> { typedef T type; };
+
+template< class T >
+using remove_extent_t = typename remove_extent<T>::type;
+
+template<bool B, class T, class F>
+struct conditional { typedef T type; };
+
+template<class T, class F>
+struct conditional<false, T, F> { typedef F type; };
+
+template< bool B, class T, class F >
+using conditional_t = typename conditional<B,T,F>::type;
+
+template< class T >
+struct decay
+{
+// NOTE: this isn't fully std compliant as we don't handle
+// function ptr case
+private:
+    typedef remove_reference_t<T> U;
+public:
+    typedef conditional_t<
+        is_array_v<U>,
+        remove_extent_t<U>*,
+        U
+    > type;
+};
+
+template< class T >
+using decay_t = typename decay<T>::type;
 
 template<bool B, class T = void>
 struct enable_if {};

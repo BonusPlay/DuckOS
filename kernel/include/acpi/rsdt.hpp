@@ -19,7 +19,7 @@ struct RSDPDescriptor
     static RSDPDescriptor& get();
 };
 
-struct ACPISDTHeader
+struct ACPISDT
 {
     char Signature[4];
     uint32_t Length;
@@ -34,13 +34,13 @@ struct ACPISDTHeader
 
 struct RSDTable
 {
-    ACPISDTHeader header;
+    ACPISDT header;
     // we cannot do it like this in C++
     /* uint32_t PointerToOtherSDT[(header.Length - sizeof(header)) / 4]; */
     uint32_t table_ptrs[0];
 
     static memory::VirtualAddress<RSDTable> get();
-    memory::VirtualAddress<ACPISDTHeader> get_table(const dstd::String& signature);
+    memory::VirtualAddress<ACPISDT> get_table(const dstd::String& signature);
 };
 
 void rsdt_test();
