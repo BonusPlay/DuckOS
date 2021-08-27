@@ -13,11 +13,11 @@ memory::VirtualAddress<uint8_t> parse_entry(memory::VirtualAddress<uint8_t> ptr)
     {
     case 0:
     {
-        auto entry = ptr.as<EntryType0>();
+        auto entry = ptr.force_as<EntryType0>();
     }
     case 1:
     {
-        auto entry = ptr.as<EntryType1>();
+        auto entry = ptr.force_as<EntryType1>();
         break;
     }
     };

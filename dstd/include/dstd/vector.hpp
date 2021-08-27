@@ -27,9 +27,13 @@ public:
 
     constexpr bool empty() const;
     constexpr uint64_t size() const;
+    constexpr void reserve(uint64_t size);
     constexpr uint64_t capacity() const;
 
     constexpr void clear();
+    constexpr void push_back(const T&);
+    constexpr void push_back(T&&);
+    constexpr void pop_back();
 
 private:
     uint64_t capacity_ = 0;
@@ -53,6 +57,9 @@ constexpr Vector<T>::Vector(uint64_t size)
 template<class T>
 constexpr Vector<T>::Vector(const Vector<T>& other)
 {
+    if (this->data_)
+        delete[] this->data_;
+
     this->capacity_ = other.capacity_;
     this->length_ = other.length_;
     this->data_ = new T[this->capacity_];
@@ -74,6 +81,9 @@ constexpr Vector<T>::Vector(Vector<T>&& other)
 template<class T>
 constexpr Vector<T>& Vector<T>::operator=(const Vector<T>& other)
 {
+    if (this->data_)
+        delete[] this->data_;
+
     this->capacity_ = other.capacity_;
     this->length_ = other.length_;
     this->data = new T[this->capacity_];
@@ -96,7 +106,7 @@ constexpr Vector<T>& Vector<T>::operator=(Vector<T>&& other)
 }
 
 template<class T>
-constexpr Vector<T>::~Vector<T>()
+constexpr Vector<T>::~Vector()
 {
     if (this->data_)
         delete[] this->data_;
@@ -143,6 +153,19 @@ constexpr uint64_t Vector<T>::size() const
 }
 
 template<class T>
+constexpr void Vector<T>::reserve(uint64_t size)
+{
+    auto* new_data = new T[size];
+    if (this->data_)
+    {
+        dstd::memcpy(new_data, this->data_, this->length_ * sizeof(T));
+        delete[] this->data_;
+    }
+    this->data_ = new_data;
+    this->capacity_ = size;
+}
+
+template<class T>
 constexpr uint64_t Vector<T>::capacity() const
 {
     return capacity_;
@@ -150,6 +173,39 @@ constexpr uint64_t Vector<T>::capacity() const
 
 template<class T>
 constexpr void Vector<T>::clear()
-{}
+{
+    delete[] this->data_;
+    this->data_ = new T[this->capacity_];
+    this->length_ = 0;
+}
+
+template<class T>
+constexpr void Vector<T>::push_back(const T& val)
+{
+    if (this->length_ == this->capacity_)
+        this->reserve(this->capacity_ << 1);
+
+    this->data_[this->length_] = val;
+    ++this->length_;
+}
+
+template<class T>
+constexpr void Vector<T>::push_back(T&& val)
+{
+    if (this->length_ == this->capacity_)
+        this->reserve(this->capacity_ << 1);
+
+    this->data_[this->length_] = val;
+    ++this->length_;
+}
+
+template<class T>
+constexpr void Vector<T>::pop_back()
+{
+    assert(this->length_ > 0, "cannot pop empty vector");
+    // destroy the object
+    ~this->data_[this->length_];
+    --this->length;
+}
 
 }
