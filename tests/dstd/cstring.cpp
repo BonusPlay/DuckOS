@@ -23,5 +23,5 @@ TEST_CASE( "memset", "[memset]" ) {
 
     dstd::memset(&src, 'A', 6);
 
-    CHECK( src == "AAAAAAThere" );
+    CHECK( dstd::strcmp(src, "AAAAAAThere") == 0 );
 }
