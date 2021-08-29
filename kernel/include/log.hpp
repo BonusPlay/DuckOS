@@ -53,13 +53,13 @@ void info(auto&&... args)
 
 void warning(auto&&... args)
 {
-    serial::print("[INFO] ");
+    serial::print("[WARNING] ");
     print_wrap(print_wrap, args...);
 }
 
 void error(auto&&... args)
 {
-    serial::print("[INFO] ");
+    serial::print("[ERROR] ");
     print_wrap(print_wrap, args...);
 }
 
