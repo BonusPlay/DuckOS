@@ -17,4 +17,4 @@ jobs:
           cppcheck --suppress=unusedFunction:dstd/src/*.cpp --inline-suppr --error-exitcode=1 --language=c++ --enable=all -I ./dstd/include/ ./dstd/src/
       - name: cppcheck kernel
         run: |
-          cppcheck --inline-suppr --error-exitcode=1 --language=c++ --enable=all -I ./dstd/include/ -I ./kernel/include/ ./kernel/src/
+          cppcheck --suppress=unusedFunction:kernel/src/*.cpp --inline-suppr --error-exitcode=1 --language=c++ --enable=all -I ./dstd/include/ -I ./kernel/include/ ./kernel/src/
