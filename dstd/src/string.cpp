@@ -82,14 +82,12 @@ String::~String()
 
 char& String::operator[](uint32_t index_)
 {
-    assert(index_ >= 0, "Index of element cannot be negative");
     assert(index_ < this->length_, "index oob");
     return this->raw_str_[index_];
 }
 
 const char& String::operator[](uint32_t index_) const
 {
-    assert(index_ >= 0, "Index of element cannot be negative");
     assert(index_ < this->length_, "index oob");
     return this->raw_str_[index_];
 }
