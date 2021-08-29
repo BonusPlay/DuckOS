@@ -12,6 +12,12 @@ struct MADTable : ACPISDT
     uint32_t flags;
 };
 
+struct MADEntry
+{
+    uint8_t type;
+    uint8_t record_len;
+};
+
 void test_madt(memory::VirtualAddress<MADTable> madt);
 
 }
