@@ -1,7 +1,12 @@
-name: unit tests
-on: [push]
+name: valgrind
+on:
+  workflow_run:
+    workflows: ["unit tests"]
+    types:
+    - completed
 jobs:
-  unit_tests:
+  valgrind:
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
     runs-on: ubuntu-latest
     env:
       CC: clang
@@ -19,8 +24,9 @@ jobs:
           cd build &&
           cmake .. -G Ninja -DBUILD_KERNEL=OFF -DBUILD_TESTS=ON
       - name: run ninja
-        run:  |
-          cd build && \
+        run: |
+          cd build &&
           ninja
-      - name: run tests
-        run: ./build/tests/tests  
+      - name: run valgrind
+        run: |
+          valgrind --show-error-list=yes ./tests/tests

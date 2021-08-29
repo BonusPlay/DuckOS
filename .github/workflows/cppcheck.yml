@@ -1,7 +1,7 @@
 name: cppcheck
 on: [push]
 jobs:
-  compile:
+  cppcheck:
     runs-on: ubuntu-latest
     env:
       CC: clang
