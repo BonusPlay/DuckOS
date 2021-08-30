@@ -5,6 +5,8 @@
 #include "serial.hpp"
 #include "memory/paging.hpp"
 #include "memory/phys_addr.hpp"
+#include "log.hpp"
+#include "acpi/ioapic.hpp"
 
 namespace acpi
 {
@@ -51,6 +53,40 @@ void apic_init()
 
     print_apic_info(apic_virt);
     init_spurious_register(apic_virt);
+}
+
+constexpr auto IOAPICREDTBL(uint8_t n)
+{
+    return (0x10 + 2 * n);
+}
+
+void ioapic_init(memory::VirtualAddress<void> addr)
+{
+    log::debug("Setting up I/O APIC");
+    auto ioapic = IoApic(addr.as<uint32_t>(), 0x0);
+
+    IoApicRedEntry entry;
+    entry.vector = 0x20;
+    entry.delivery_mode = IoApicRedEntry::DeliveryMode::NORMAL;
+    entry.destination_mode = IoApicRedEntry::DestinationMode::PHYSICAL;
+    entry.pin_polarity = IoApicRedEntry::PinPolarity::ACTIVE_HIGH;
+    entry.remote_irr = false;
+    entry.trigger_mode = IoApicRedEntry::TriggerMode::EDGE;
+    entry.masked = false;
+    // TODO: hardcoded Local APIC ID
+    entry.destination = 0x0;
+
+    ioapic.set(0x12, entry);
+
+    // enable
+    auto tmp = rdmsr(MSR_IA32_APIC_BASE);
+    tmp |= (1 << 11);
+    wrmsr(MSR_IA32_APIC_BASE, tmp);
+
+    // enable interrupts (just in case)
+    __asm__("sti");
+
+    log::debug("Finished I/O APIC");
 }
 
 }

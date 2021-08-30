@@ -2,6 +2,7 @@
 #include <dstd/type_traits.hpp>
 #include "serial.hpp"
 #include "memory/phys_addr.hpp"
+#include "memory/virt_addr.hpp"
 
 namespace log
 {
@@ -9,6 +10,12 @@ namespace log
 // SFINAE helper
 template<typename T>
 struct print_helper : dstd::false_type {};
+
+template<typename T>
+struct is_virt_addr : dstd::false_type {};
+
+template<typename T>
+struct is_virt_addr<memory::VirtualAddress<T>> : dstd::true_type {};
 
 template<typename T_>
 void print(T_&& arg)
@@ -19,10 +26,14 @@ void print(T_&& arg)
         serial::print(arg);
     } else if constexpr (dstd::is_same_v<T, memory::PhysicalAddress>) {
         serial::print(dstd::addr_to_string(arg.addr));
+        serial::print("_p");
     } else if constexpr (dstd::is_integral_v<T>) {
         serial::print(dstd::to_string(arg, 16));
     } else if constexpr (dstd::is_same_v<dstd::decay_t<T>, char*>) {
         serial::print(arg);
+    } else if constexpr (is_virt_addr<T>::value) {
+        serial::print(dstd::addr_to_string(arg.val));
+        serial::print("_v");
     } else {
         static_assert(print_helper<T>::value, "Unsupported type in print");
     }

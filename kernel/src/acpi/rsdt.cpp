@@ -5,6 +5,7 @@
 #include "memory/phys_addr.hpp"
 #include "memory/paging.hpp"
 #include "multiboot2.hpp"
+#include "log.hpp"
 
 namespace acpi
 {
@@ -35,6 +36,7 @@ memory::VirtualAddress<ACPISDT> RSDTable::get_table(const dstd::String& signatur
         const auto table_phys = memory::PhysicalAddress{this->table_ptrs[i]};
         const auto page_virt = memory::map_4kb(memory::PhysicalAddress{reinterpret_cast<uint64_t>(table_phys.addr) & static_cast<uint64_t>(~0xFFFF)});
         const auto table_virt = (page_virt + (reinterpret_cast<uint64_t>(table_phys.addr) & 0xFFFF)).as<ACPISDT>();
+        log::debug("Entry in RSDT", dstd::String(table_virt->Signature, 4));
         if (dstd::memcmp(table_virt->Signature, signature.data(), 4) == 0)
             return table_virt;
     }
