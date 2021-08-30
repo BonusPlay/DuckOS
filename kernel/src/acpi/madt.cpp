@@ -17,7 +17,6 @@ void test_madt(memory::VirtualAddress<MADTable> madt)
     for (auto entry_addr = start; entry_addr.val < end.val;)
     {
         auto entry = entry_addr.force_as<MADEntry>();
-        log::debug("MADT Entry", entry_addr, "type", entry->type);
 
         switch (entry->type)
         {
@@ -35,6 +34,10 @@ void test_madt(memory::VirtualAddress<MADTable> madt)
         // IO/APIC Interrupt Source Override
         case 2:
             log::debug("Found IO/APIC Interrupt Source Override", "bus src", *((entry_addr + 0x2).val), "irq src", *((entry_addr + 0x3).val), "global system interrupt", *((entry_addr + 0x4).force_as<uint32_t>().val));
+            break;
+
+        default:
+            log::debug("Unknown MADT folder", entry->type);
             break;
         }
 
