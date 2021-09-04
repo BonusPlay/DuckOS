@@ -61,7 +61,7 @@ void interrupt_handler(uint8_t interrupt_num, uint64_t error_code, interrupts::F
     serial::println(dstd::addr_to_string(static_cast<void*>(interrupt_frame)));
     serial::println("=== INTERRUPT ===");
 
-    __asm__ ("hlt;");
+    /* __asm__ ("hlt;"); */
 }
 
 }

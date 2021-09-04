@@ -1,6 +1,7 @@
 #include "acpi/madt.hpp"
 #include "log.hpp"
 #include "acpi/apic.hpp"
+#include "memory/paging.hpp"
 
 namespace acpi
 {
@@ -17,6 +18,7 @@ void test_madt(memory::VirtualAddress<MADTable> madt)
     for (auto entry_addr = start; entry_addr.val < end.val;)
     {
         auto entry = entry_addr.force_as<MADEntry>();
+        log::debug(entry_addr, entry->type, entry->record_len);
 
         switch (entry->type)
         {
@@ -27,18 +29,26 @@ void test_madt(memory::VirtualAddress<MADTable> madt)
 
         // I/O APIC
         case 1:
-            log::debug("Found I/O APIC");
-            /* ioapic_init(entry_addr.as<void>()); */
+        {
+            const auto ioapic_phys = memory::PhysicalAddress{*(entry_addr + 0x4).force_as<uint32_t>().val};
+            log::debug("Found I/O APIC", "I/O APIC ID", *(entry_addr.val), "I/O APIC base addr", ioapic_phys);
+            ioapic_init(ioapic_phys);
+            /* [> ioapic_init((entry_addr + 0x4).force_as<void>()); <] */
             break;
-
+        }
         // IO/APIC Interrupt Source Override
         case 2:
             log::debug("Found IO/APIC Interrupt Source Override", "bus src", *((entry_addr + 0x2).val), "irq src", *((entry_addr + 0x3).val), "global system interrupt", *((entry_addr + 0x4).force_as<uint32_t>().val));
             break;
 
-        default:
-            log::debug("Unknown MADT folder", entry->type);
+        case 4:
+            log::debug("Found Local APIC Non-maskable interrupts", "ACPI Processor ID", *((entry_addr + 0x2).val), "Flags", *((entry_addr + 0x3).force_as<uint16_t>().val), "LINT#", *((entry_addr + 0x5).val));
             break;
+
+        default:
+            log::debug("Unknown MADT entry", entry->type, entry->record_len);
+            // HACK: wolp, we exit early I guess
+            return;
         }
 
         // increment pointer

@@ -17,8 +17,8 @@ void disable_pic()
     const constexpr uint16_t PORT_MASTER_PIC_DATA = 0xA1;
 
     // disable 8259 PIC
-    out(PORT_MASTER_PIC_DATA, 0xFF);
     out(PORT_SLAVE_PIC_DATA, 0xFF);
+    out(PORT_MASTER_PIC_DATA, 0xFF);
 }
 
 void print_apic_info(const memory::VirtualAddress<uint32_t>& apic_virt)
@@ -60,10 +60,12 @@ constexpr auto IOAPICREDTBL(uint8_t n)
     return (0x10 + 2 * n);
 }
 
-void ioapic_init(memory::VirtualAddress<void> addr)
+void ioapic_init(memory::PhysicalAddress addr)
 {
     log::debug("Setting up I/O APIC");
-    auto ioapic = IoApic(addr.as<uint32_t>(), 0x0);
+    const auto ioapic_virt = memory::map_4kb(addr).as<uint32_t>();
+    
+    auto ioapic = IoApic(ioapic_virt, 0x0);
 
     IoApicRedEntry entry;
     entry.vector = 0x20;
@@ -73,7 +75,7 @@ void ioapic_init(memory::VirtualAddress<void> addr)
     entry.remote_irr = false;
     entry.trigger_mode = IoApicRedEntry::TriggerMode::EDGE;
     entry.masked = false;
-    // TODO: hardcoded Local APIC ID
+    // HACK: hardcoded Local APIC ID
     entry.destination = 0x0;
 
     ioapic.set(0x12, entry);

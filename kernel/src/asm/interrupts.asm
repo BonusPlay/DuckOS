@@ -91,6 +91,7 @@ isr_stub_common:
     ret
 
 ; generate stubs
+; 0-31 are exceptions
 isr_stub     0
 isr_stub     1
 isr_stub     2
@@ -124,10 +125,17 @@ isr_stub     29
 isr_err_stub 30
 isr_stub     31
 
+; here we start mapped ones
+%assign i 32
+%rep    2
+    isr_stub i
+%assign i i+1
+%endrep
+
 global _ISR_STUB_TABLE_
 _ISR_STUB_TABLE_:
 %assign i 0 
-%rep    32 
+%rep    34
     dq isr_stub_%+i
 %assign i i+1 
 %endrep
