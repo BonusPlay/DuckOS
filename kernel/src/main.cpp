@@ -1,6 +1,5 @@
 #include "main.hpp"
 #include "vga.hpp"
-#include "serial.hpp"
 #include "idt.hpp"
 #include "io.hpp"
 #include "utility.hpp"
@@ -22,23 +21,21 @@ void kmain(void* mb2_struct)
 
     multiboot2::init(mb2_struct);
 
-/*     serial::print("DuckOS starting up\n"_s);
- *
- *     vga::clear();
- *     vga::set_pos(0, 0);
- *     vga::print("Yoloooooo\n");
- *     vga::print("No witam, mam newline'y\n");
- *     vga::set_color(vga::Color::GREEN);
- *     vga::print("Nawet kolorki\n"); */
+    log::info("DuckOS starting up");
+
+    vga::clear();
+    vga::set_pos(0, 0);
+    vga::print("Yoloooooo\n");
+    vga::print("No witam, mam newline'y\n");
+    vga::set_color(vga::Color::GREEN);
+    vga::print("Nawet kolorki\n");
 
     idt::init();
     memory::init();
 
-    /* serial::println("Hello before the interrupt"); */
-
-    /* interrupt<0x01>(); */
-
-    /* serial::println("Hello after the interrupt"); */
+    log::debug("Hello before the interrupt");
+    interrupt<0x01>();
+    log::debug("Hello after the interrupt");
 
     acpi::apic_init();
 

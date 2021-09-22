@@ -18,7 +18,6 @@ void test_madt(memory::VirtualAddress<MADTable> madt)
     for (auto entry_addr = start; entry_addr.val < end.val;)
     {
         auto entry = entry_addr.force_as<MADEntry>();
-        log::debug(entry_addr, entry->type, entry->record_len);
 
         switch (entry->type)
         {
