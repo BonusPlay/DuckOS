@@ -35,7 +35,7 @@ void print_apic_info(const memory::VirtualAddress<uint32_t>& apic_virt)
 void init_spurious_register(const memory::VirtualAddress<uint32_t>& apic_virt)
 {
     auto reg_addr = apic_virt + 0xF0;
-    *(reg_addr.val) = 0xF0;
+    *(reg_addr.val) = 0xFF;
 }
 
 void apic_init()
