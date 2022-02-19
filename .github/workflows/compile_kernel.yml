@@ -15,10 +15,7 @@ jobs:
           sudo ln -s /usr/bin/ld.lld-12 /usr/bin/ld.lld
       - name: run cmake
         run: |
-          mkdir build &&
-          cd build &&
-          cmake .. -G Ninja -DBUILD_KERNEL=ON
+          cmake . -B build -G Ninja -DBUILD_KERNEL=ON
       - name: run ninja
         run: |
-          cd build &&
-          ninja
+          ninja -C build
