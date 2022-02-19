@@ -58,7 +58,7 @@ template<uint8_t num>
 inline void interrupt()
 {
     static_assert(num <128,  "Interrupt has to be below 128");
-    asm (
+    asm volatile (
         "int %0"
         :
         : "N"(num)
@@ -76,7 +76,7 @@ struct cpuid_regs
 inline cpuid_regs cpuid(uint32_t num)
 {
     auto ret = cpuid_regs{};
-    asm (
+    asm volatile (
         "mov eax, %0;"
         "cpuid;"
         "mov %0, eax;"
@@ -101,7 +101,7 @@ inline uint64_t get_cr3()
 
 inline void set_cr3(uint64_t val)
 {
-    asm (
+    asm volatile (
         "mov %0, %%cr3;"
         :
         : "r" (val)

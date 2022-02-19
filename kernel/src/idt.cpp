@@ -3,10 +3,11 @@
 #include "io.hpp"
 #include "utility.hpp"
 #include <dstd/string.hpp>
-#include "serial.hpp"
+#include "log.hpp"
+#include "keyboard.hpp"
 
 // "injected" by linker
-extern uint64_t* _ISR_STUB_TABLE_[32];
+extern uint64_t* _ISR_STUB_TABLE_[100];
 extern idt::IDTEntry _IDT_TABLE_[0x100];
 
 namespace idt
@@ -52,6 +53,12 @@ void init()
 
 void interrupt_handler(uint8_t interrupt_num, uint64_t error_code, interrupts::Frame* interrupt_frame)
 {
+    if (interrupt_num == 0x41)
+    {
+        keyboard::handle_interrupt(interrupt_frame);
+        return;
+    }
+
     serial::println("=== INTERRUPT ===");
     serial::print("Number: ");
     serial::println(dstd::to_string(interrupt_num, 16));
@@ -60,8 +67,6 @@ void interrupt_handler(uint8_t interrupt_num, uint64_t error_code, interrupts::F
     serial::print("Frame addr: ");
     serial::println(dstd::addr_to_string(static_cast<void*>(interrupt_frame)));
     serial::println("=== INTERRUPT ===");
-
-    /* __asm__ ("hlt;"); */
 }
 
 }

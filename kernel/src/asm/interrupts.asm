@@ -127,7 +127,7 @@ isr_stub     31
 
 ; here we start mapped ones
 %assign i 32
-%rep    2
+%rep    68
     isr_stub i
 %assign i i+1
 %endrep
@@ -135,7 +135,7 @@ isr_stub     31
 global _ISR_STUB_TABLE_
 _ISR_STUB_TABLE_:
 %assign i 0 
-%rep    34
+%rep    100
     dq isr_stub_%+i
 %assign i i+1 
 %endrep

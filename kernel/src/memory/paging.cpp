@@ -1,5 +1,5 @@
 #include "memory/paging.hpp"
-#include "serial.hpp"
+#include "log.hpp"
 
 extern memory::PML2Table _PML2T_TABLE_;
 
@@ -16,6 +16,8 @@ void init()
     _PML2T_TABLE_.insert_pml1t(0x1, PhysicalAddress(&init_table));
 }
 
+// OH GOD HOW BROKEN THIS IS
+// REWRITE AND PURGE IT OFF THIS PLANET
 VirtualAddress<void> map_4kb(const PhysicalAddress& phys_addr)
 {
     // TODO: this doesn't work
@@ -40,11 +42,12 @@ VirtualAddress<void> map_4kb(const PhysicalAddress& phys_addr)
     pml1t->fill(phys_addr);
     _PML2T_TABLE_.insert_pml1t(offset, 0x300000_p + (offset - 2) * 0x1000);
 
-    serial::print("Memory mapped ");
-    serial::print(dstd::addr_to_string(phys_addr.addr));
-    serial::print("_p => ");
-    serial::print(dstd::to_string(0x200000 * offset, 16));
-    serial::print("_v\n");
+    log::debug(
+            "Memory mapped ",
+            dstd::addr_to_string(phys_addr.addr),
+            "_p => ",
+            dstd::to_string(0x200000 * offset, 16),
+            "_v");
 
     return VirtualAddress(static_cast<uint64_t>(0x200000 * offset));
 }

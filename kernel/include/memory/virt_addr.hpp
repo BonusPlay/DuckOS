@@ -37,7 +37,7 @@ struct VirtualAddress
     requires(!dstd::is_void_v<T_>)
     {
         assert(val != nullptr, "Attempted to deref nullptr");
-        return this->val;
+        return *val;
     }
 
     T* operator->() const

@@ -63,8 +63,8 @@ static_assert(sizeof(IoApicRedEntry) == 8);
 class IoApic
 {
 public:
-    IoApic(memory::VirtualAddress<uint32_t> addr, uint32_t apicId)
-        : addr_(addr), id_(apicId)
+    IoApic(memory::VirtualAddress<uint32_t> addr)
+        : addr_(addr)
     {}
 
     void set(uint8_t lower_reg, IoApicRedEntry entry)
@@ -73,15 +73,14 @@ public:
         write_reg(lower_reg + 1, entry.upper_bits());
     }
 
-private:
-    memory::VirtualAddress<uint32_t> addr_;
-    uint32_t id_;
-
     void write_reg(uint8_t num, uint32_t val)
     {
         *(static_cast<volatile uint32_t*>(addr_.val)) = num;
         *(static_cast<volatile uint32_t*>((addr_ + 0x10).val)) = val;
     }
+
+private:
+    memory::VirtualAddress<uint32_t> addr_;
 };
 
 }

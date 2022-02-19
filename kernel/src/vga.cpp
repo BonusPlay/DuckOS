@@ -60,24 +60,29 @@ void print(const dstd::String& str)
     for(uint32_t i = 0; i < str.length(); ++i)
     {
         const auto chr = *(str.data() + i);
-
-        // wrap newline
-        if (chr == '\n')
-        {
-            x = 0;
-            y += 1;
-            continue;
-        }
-        
-        if (chr == '\t')
-        {
-            for(auto j = 0; j < 4; ++j)
-                print_char(' ');
-            continue;
-        }
-
-        print_char(chr);
+        print(chr);
     }
+}
+
+void print(const char& chr)
+{
+    // wrap newline
+    if (chr == '\n')
+    {
+        x = 0;
+        y += 1;
+        return;
+    }
+
+    // tab as 4 spaces
+    if (chr == '\t')
+    {
+        for(auto j = 0; j < 4; ++j)
+            print_char(' ');
+        return;
+    }
+
+    print_char(chr);
 }
 
 void clear(Color bg_)

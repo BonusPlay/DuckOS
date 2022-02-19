@@ -2,7 +2,6 @@
 #include "io.hpp"
 
 #include "utility.hpp"
-#include "serial.hpp"
 #include "memory/paging.hpp"
 #include "memory/phys_addr.hpp"
 #include "log.hpp"
@@ -11,12 +10,31 @@
 namespace acpi
 {
 
+/*
+ * https://ethv.net/workshops/osdev/notes/notes-3.html
+ */
 void disable_pic()
 {
     const constexpr uint16_t PORT_SLAVE_PIC_DATA = 0x21;
     const constexpr uint16_t PORT_MASTER_PIC_DATA = 0xA1;
 
-    // disable 8259 PIC
+    // set ICW1
+    out(PORT_SLAVE_PIC_DATA, 0x11);
+    out(PORT_MASTER_PIC_DATA, 0x11);
+
+    // set ICW2 (IRQ base offsets)
+    out(PORT_SLAVE_PIC_DATA, 0xe0);
+    out(PORT_MASTER_PIC_DATA, 0xe8);
+
+    // set ICW3
+    out(PORT_SLAVE_PIC_DATA, 0x4);
+    out(PORT_MASTER_PIC_DATA, 0x2);
+
+    // set ICW3
+    out(PORT_SLAVE_PIC_DATA, 0x1);
+    out(PORT_MASTER_PIC_DATA, 0x1);
+
+    // set OCW1 (interrupt masks)
     out(PORT_SLAVE_PIC_DATA, 0xFF);
     out(PORT_MASTER_PIC_DATA, 0xFF);
 }
@@ -24,23 +42,21 @@ void disable_pic()
 void print_apic_info(const memory::VirtualAddress<uint32_t>& apic_virt)
 {
     const auto lapic_id = apic_virt + 0x20;
-    serial::print("APIC id: ");
-    serial::println(dstd::to_string(*(lapic_id.val), 16));
+    log::debug("APIC id: ", dstd::to_string(*(lapic_id.val), 16));
 
     const auto lapic_version = apic_virt + 0x30;
-    serial::print("APIC version: ");
-    serial::println(dstd::to_string(*(lapic_version.val), 16));
+    log::debug("APIC version: ", dstd::to_string(*(lapic_version.val), 16));
 }
 
 void init_spurious_register(const memory::VirtualAddress<uint32_t>& apic_virt)
 {
     auto reg_addr = apic_virt + 0xF0;
-    *(reg_addr.val) = 0xFF;
+    *(reg_addr.val) = 0x1FF;
 }
 
 void apic_init()
 {
-    serial::println("apic::init()");
+    log::debug("apic::init()");
 
     disable_pic();
 
@@ -65,10 +81,10 @@ void ioapic_init(memory::PhysicalAddress addr)
     log::debug("Setting up I/O APIC");
     const auto ioapic_virt = memory::map_4kb(addr).as<uint32_t>();
     
-    auto ioapic = IoApic(ioapic_virt, 0x0);
+    auto ioapic = IoApic(ioapic_virt);
 
     IoApicRedEntry entry;
-    entry.vector = 0x20;
+    entry.vector = 0x41;
     entry.delivery_mode = IoApicRedEntry::DeliveryMode::NORMAL;
     entry.destination_mode = IoApicRedEntry::DestinationMode::PHYSICAL;
     entry.pin_polarity = IoApicRedEntry::PinPolarity::ACTIVE_HIGH;
@@ -78,7 +94,8 @@ void ioapic_init(memory::PhysicalAddress addr)
     // HACK: hardcoded Local APIC ID
     entry.destination = 0x0;
 
-    ioapic.set(0x12, entry);
+    // keyboard
+    ioapic.set(IOAPICREDTBL(1), entry);
 
     // enable
     auto tmp = rdmsr(MSR_IA32_APIC_BASE);
@@ -89,6 +106,15 @@ void ioapic_init(memory::PhysicalAddress addr)
     __asm__("sti");
 
     log::debug("Finished I/O APIC");
+}
+
+void apic_eoi()
+{
+    // HACK: duplicated code
+    auto tmp = rdmsr(MSR_IA32_APIC_BASE);
+    auto apic_base = memory::PhysicalAddress((tmp >> 12) << 12);
+    auto apic_virt = memory::map_4kb(apic_base).as<uint32_t>();
+    *(apic_virt + 0xB0) = 0;
 }
 
 }

@@ -10,7 +10,6 @@
 #include "multiboot2.hpp"
 #include "log.hpp"
 
-[[noreturn]]
 // cppcheck-suppress unusedFunction
 void kmain(void* mb2_struct)
 {
@@ -29,6 +28,7 @@ void kmain(void* mb2_struct)
     vga::print("No witam, mam newline'y\n");
     vga::set_color(vga::Color::GREEN);
     vga::print("Nawet kolorki\n");
+    vga::set_color(vga::Color::WHITE);
 
     idt::init();
     memory::init();
@@ -43,6 +43,12 @@ void kmain(void* mb2_struct)
     auto madt = rsdt->get_table(dstd::String{"APIC", 4}).as<acpi::MADTable>();
     test_madt(madt);
 
+    log::info("Going into infinite loop...");
+
     while(true)
-    {};
+    {
+        __asm__ ("nop");
+    }
+
+    log::info("Finished...");
 }
