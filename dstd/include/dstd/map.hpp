@@ -47,7 +47,7 @@ Map<K,T>::Map(const Map<K,T>& other)
     };
 
     if (other.head_)
-        visit_node(visit_node, this->head_, other->head_);
+        visit_node(visit_node, this->head_, other.head_);
 }
 
 template<class K, class T>
@@ -102,6 +102,8 @@ void Map<K,T>::clear()
 
     if (this->head_)
         visit_node(visit_node, this->head_);
+
+    this->head_ = nullptr;
 }
 
 }
