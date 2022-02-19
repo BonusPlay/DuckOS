@@ -16,7 +16,7 @@ jobs:
       - name: Install dependencies
         run: |
           sudo apt update -q &&
-          sudo apt install -y clang cmake lld-12 ninja-build nasm &&
+          sudo apt install -y clang cmake lld-12 ninja-build nasm valgrind &&
           sudo ln -s /usr/bin/ld.lld-12 /usr/bin/ld.lld
       - name: run cmake
         run: |
