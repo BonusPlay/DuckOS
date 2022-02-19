@@ -63,7 +63,7 @@ static_assert(sizeof(IoApicRedEntry) == 8);
 class IoApic
 {
 public:
-    IoApic(memory::VirtualAddress<uint32_t> addr)
+    explicit IoApic(memory::VirtualAddress<uint32_t> addr)
         : addr_(addr)
     {}
 
