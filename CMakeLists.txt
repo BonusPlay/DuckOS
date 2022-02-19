@@ -32,11 +32,25 @@ endif()
 
 ADD_CUSTOM_TARGET(image
     COMMAND sudo ${CMAKE_SOURCE_DIR}/scripts/build-image.sh
+    DEPENDS ${CMAKE_BINARY_DIR}/kernel/DuckOS
     BYPRODUCTS ${CMAKE_BINARY_DIR}/duckOS.img
     USES_TERMINAL
 )
 
-ADD_CUSTOM_TARGET(qemu-image
+ADD_CUSTOM_TARGET(run
     COMMAND ${CMAKE_SOURCE_DIR}/scripts/run-qemu-image.sh
+    DEPENDS ${CMAKE_BINARY_DIR}/duckOS.img
+    USES_TERMINAL
+)
+
+ADD_CUSTOM_TARGET(debug
+    COMMAND ${CMAKE_SOURCE_DIR}/scripts/debug-qemu-image.sh
+    DEPENDS ${CMAKE_BINARY_DIR}/duckOS.img
+    USES_TERMINAL
+)
+
+ADD_CUSTOM_TARGET(bochs
+    COMMAND ${CMAKE_SOURCE_DIR}/scripts/run-bochs-image.sh
+    DEPENDS ${CMAKE_BINARY_DIR}/duckOS.img
     USES_TERMINAL
 )
