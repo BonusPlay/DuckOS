@@ -1,8 +1,13 @@
 #pragma once
 #include <dstd/cstdint.hpp>
 
-constexpr uint32_t MSR_IA32_EFER = 0xC0000080;
+namespace io
+{
+
 constexpr uint32_t MSR_IA32_APIC_BASE = 0x1B;
+constexpr uint32_t MSR_IA32_EFER = 0xC0000080;
+constexpr uint32_t MSR_IA32_STAR = 0xC0000081;
+constexpr uint32_t MSR_IA32_LSTAR = 0xC0000082;
 
 inline void out(uint16_t port, uint8_t val)
 {
@@ -65,29 +70,33 @@ inline void interrupt()
     );
 }
 
-struct cpuid_regs
+inline void syscall()
 {
+    asm volatile (
+        "syscall"
+    );
+}
+
+struct CPUID
+{
+    CPUID(uint32_t leaf, uint32_t subleaf)
+        : leaf(leaf), subleaf(subleaf)
+    {
+        asm volatile (
+            "cpuid"
+            : "=a" (eax), "=b" (ebx), "=c" (ecx), "=d" (edx)
+            : "a" (this->leaf), "c" (this->subleaf)
+        );
+    }
+
+    uint32_t leaf;
+    uint32_t subleaf;
+
     uint32_t eax;
     uint32_t ebx;
     uint32_t ecx;
     uint32_t edx;
 };
-
-inline cpuid_regs cpuid(uint32_t num)
-{
-    auto ret = cpuid_regs{};
-    asm volatile (
-        "mov eax, %0;"
-        "cpuid;"
-        "mov %0, eax;"
-        "mov %1, ebx;"
-        "mov %2, ecx;"
-        "mov %3, edx;"
-        : "=r" (ret.eax), "=r" (ret.ebx), "=r" (ret.ecx), "=r" (ret.edx)
-        : "0" (num)
-    );
-    return ret;
-}
 
 inline uint64_t get_cr3()
 {
@@ -106,4 +115,6 @@ inline void set_cr3(uint64_t val)
         :
         : "r" (val)
     );
+}
+
 }

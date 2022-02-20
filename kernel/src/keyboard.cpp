@@ -15,13 +15,13 @@ void handle_interrupt(interrupts::Frame* interrupt_frame)
     log::info("handling keyboard");
 
     // read keycode
-    auto a = inb(0x60);
+    auto a = io::inb(0x60);
     log::info(a);
 
     // convert keycode to ascii
 
     // clear buf
-    out(0x20, 0x20);
+    io::out(0x20, 0x20);
 
     switch (static_cast<Keycode>(a))
     {

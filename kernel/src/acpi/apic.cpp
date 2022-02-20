@@ -19,24 +19,24 @@ void disable_pic()
     const constexpr uint16_t PORT_MASTER_PIC_DATA = 0xA1;
 
     // set ICW1
-    out(PORT_SLAVE_PIC_DATA, 0x11);
-    out(PORT_MASTER_PIC_DATA, 0x11);
+    io::out(PORT_SLAVE_PIC_DATA, 0x11);
+    io::out(PORT_MASTER_PIC_DATA, 0x11);
 
     // set ICW2 (IRQ base offsets)
-    out(PORT_SLAVE_PIC_DATA, 0xe0);
-    out(PORT_MASTER_PIC_DATA, 0xe8);
+    io::out(PORT_SLAVE_PIC_DATA, 0xe0);
+    io::out(PORT_MASTER_PIC_DATA, 0xe8);
 
     // set ICW3
-    out(PORT_SLAVE_PIC_DATA, 0x4);
-    out(PORT_MASTER_PIC_DATA, 0x2);
+    io::out(PORT_SLAVE_PIC_DATA, 0x4);
+    io::out(PORT_MASTER_PIC_DATA, 0x2);
 
     // set ICW3
-    out(PORT_SLAVE_PIC_DATA, 0x1);
-    out(PORT_MASTER_PIC_DATA, 0x1);
+    io::out(PORT_SLAVE_PIC_DATA, 0x1);
+    io::out(PORT_MASTER_PIC_DATA, 0x1);
 
     // set OCW1 (interrupt masks)
-    out(PORT_SLAVE_PIC_DATA, 0xFF);
-    out(PORT_MASTER_PIC_DATA, 0xFF);
+    io::out(PORT_SLAVE_PIC_DATA, 0xFF);
+    io::out(PORT_MASTER_PIC_DATA, 0xFF);
 }
 
 void print_apic_info(const memory::VirtualAddress<uint32_t>& apic_virt)
@@ -61,7 +61,7 @@ void apic_init()
     disable_pic();
 
     // 0xfee00000
-    auto tmp = rdmsr(MSR_IA32_APIC_BASE);
+    auto tmp = io::rdmsr(io::MSR_IA32_APIC_BASE);
     auto apic_base = memory::PhysicalAddress((tmp >> 12) << 12);
 
     // TODO: map no cache
@@ -98,9 +98,9 @@ void ioapic_init(memory::PhysicalAddress addr)
     ioapic.set(IOAPICREDTBL(1), entry);
 
     // enable
-    auto tmp = rdmsr(MSR_IA32_APIC_BASE);
+    auto tmp = io::rdmsr(io::MSR_IA32_APIC_BASE);
     tmp |= (1 << 11);
-    wrmsr(MSR_IA32_APIC_BASE, tmp);
+    io::wrmsr(io::MSR_IA32_APIC_BASE, tmp);
 
     // enable interrupts (just in case)
     __asm__("sti");
@@ -111,7 +111,7 @@ void ioapic_init(memory::PhysicalAddress addr)
 void apic_eoi()
 {
     // HACK: duplicated code
-    auto tmp = rdmsr(MSR_IA32_APIC_BASE);
+    auto tmp = io::rdmsr(io::MSR_IA32_APIC_BASE);
     auto apic_base = memory::PhysicalAddress((tmp >> 12) << 12);
     auto apic_virt = memory::map_4kb(apic_base).as<uint32_t>();
     *(apic_virt + 0xB0) = 0;

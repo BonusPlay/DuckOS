@@ -9,6 +9,7 @@
 #include "memory/paging.hpp"
 #include "multiboot2.hpp"
 #include "log.hpp"
+#include "syscalls.hpp"
 
 // cppcheck-suppress unusedFunction
 void kmain(void* mb2_struct)
@@ -34,7 +35,7 @@ void kmain(void* mb2_struct)
     memory::init();
 
     log::debug("Hello before the interrupt");
-    interrupt<0x01>();
+    io::interrupt<0x40>();
     log::debug("Hello after the interrupt");
 
     acpi::apic_init();
@@ -42,6 +43,12 @@ void kmain(void* mb2_struct)
     auto rsdt = acpi::RSDTable::get();
     auto madt = rsdt->get_table(dstd::String{"APIC", 4}).as<acpi::MADTable>();
     test_madt(madt);
+
+    syscalls::setup();
+
+    log::debug("YOLO CALLING SYSCALL");
+    io::syscall();
+    log::debug("survived?");
 
     log::info("Going into infinite loop...");
 

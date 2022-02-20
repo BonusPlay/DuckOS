@@ -53,6 +53,9 @@ void init()
 
 void interrupt_handler(uint8_t interrupt_num, uint64_t error_code, interrupts::Frame* interrupt_frame)
 {
+    if (interrupt_num == 0x40)
+        return;
+
     if (interrupt_num == 0x41)
     {
         keyboard::handle_interrupt(interrupt_frame);
@@ -67,6 +70,8 @@ void interrupt_handler(uint8_t interrupt_num, uint64_t error_code, interrupts::F
     serial::print("Frame addr: ");
     serial::println(dstd::addr_to_string(static_cast<void*>(interrupt_frame)));
     serial::println("=== INTERRUPT ===");
+
+    assert(false, "unhandled interrupt");
 }
 
 }

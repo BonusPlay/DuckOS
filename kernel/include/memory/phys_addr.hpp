@@ -8,7 +8,7 @@ struct PhysicalAddress
 {
     void* addr;
 
-    // note: some voodoo black magic forbits this from being constexpr
+    // note: we can't reinterpret_cast in constexpr context
     explicit PhysicalAddress(uint64_t addr_)
         : addr(reinterpret_cast<void*>(addr_))
     {}
