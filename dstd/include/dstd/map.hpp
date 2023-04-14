@@ -1,109 +1,80 @@
 #pragma once
+#include "dstd/vector.hpp"
+#include "dstd/tuple.hpp"
+#include "dstd/expected.hpp"
+#include "dstd/ref.hpp"
 
 namespace dstd
 {
+
+enum class MapError
+{
+    KeyNotFound,
+};
 
 template<class K, class T>
 class Map
 {
 public:
-    Map() = default;
-    Map(const Map&);
-    Map(Map&&);
-    Map& operator=(const Map&);
-    Map& operator=(Map&&);
-    ~Map();
+    //void insert(const K&, const T&);
+    void insert(K&&, T&&);
 
-    T& operator[](K&&);
+    [[nodiscard]]
+    constexpr Expected<Ref<T>, MapError> operator[](K&&);
+
+    [[nodiscard]]
+    constexpr Expected<Ref<const T>, MapError> operator[](K&&) const;
 
     void clear();
 
-    struct Node
-    {
-        K key_;
-        T val_;
-        Node* next_;
-    };
-
 private:
-    Node* head_ = nullptr;
+    Vector<Tuple<K, T>> storage;
 };
 
+//template<class K, class T>
+//void Map<K, T>::insert(const K& key, const T& value)
+//{
+//    //assert(!keys.contains(key), "map already has this key specified");
+//    storage.push_back(Tuple<K, T>(forward<K>(key), forward<T>(value)));
+//}
+
 template<class K, class T>
-Map<K,T>::Map(const Map<K,T>& other)
+void Map<K, T>::insert(K&& key, T&& value)
 {
-    this->clear();
-
-    const auto visit_node = [=](const auto& self, Node* this_node, Node* other_node)
-    {
-        this_node->key_ = other_node->key_;
-        this_node->val_ = other_node->val_;
-
-        if (other_node->next_)
-        {
-            this_node->next_ = new Node;
-            self(self, this_node->next_, other_node->next_);
-        }
-    };
-
-    if (other.head_)
-        visit_node(visit_node, this->head_, other.head_);
+    storage.push_back(Tuple<K, T>(forward<K>(key), forward<T>(value)));
 }
 
 template<class K, class T>
-Map<K,T>::~Map()
+constexpr Expected<Ref<T>, MapError> Map<K, T>::operator[](K&& key)
 {
-    this->clear();
-}
-
-template<class K, class T>
-T& Map<K, T>::operator[](K&& key)
-{
-    const auto create_node = [=]()
+    for (auto i = 0; i < storage.size(); ++i)
     {
-        auto ret = new Node;
-        ret->key_ = key;
-        ret->next_ = nullptr;
-        return ret;
-    };
-
-    const auto visit_node = [=](const auto& self, Node* node)
-    {
-        if (node->key_ == key)
-            return &node->val_;
-
-        if (node->next_ == nullptr)
+        if (storage[i].template get<0>() == key)
         {
-            node->next_ = create_node();
-            return &node->val_;
+            return Expected<Ref<T>, MapError>(Ref(storage[i].template get<1>()));
         }
-
-        return self(self, node->next_);
-    };
-
-    if (!this->head_)
-    {
-        this->head_ = create_node();
-        return this->head_->val_;
     }
 
-    return *visit_node(visit_node, this->head_);
+    return Unexpected<Ref<T>, MapError>(MapError::KeyNotFound);
+}
+
+template<class K, class T>
+constexpr Expected<Ref<const T>, MapError> Map<K, T>::operator[](K&& key) const
+{
+    for (auto i = 0; i < storage.size(); ++i)
+    {
+        if (storage[i].template get<0>() == key)
+        {
+            return Expected<Ref<const T>, MapError>(Ref(storage[i].template get<1>()));
+        }
+    }
+    return Unexpected<Ref<T>, MapError>(MapError::KeyNotFound);
 }
 
 template<class K, class T>
 void Map<K,T>::clear()
 {
-    const auto visit_node = [](const auto& self, Node* node) -> void
-    {
-        if (node->next_)
-            self(self, node->next_);
-        delete node;
-    };
-
-    if (this->head_)
-        visit_node(visit_node, this->head_);
-
-    this->head_ = nullptr;
+    storage.clear();
 }
 
 }

@@ -1,6 +1,6 @@
 #pragma once
 #include "dstd/cstdint.hpp"
-#include "dstd/cassert.hpp"
+#include "dstd/assert.hpp"
 #include "dstd/cstring.hpp"
 #include "dstd/utility.hpp"
 
@@ -34,6 +34,7 @@ public:
     constexpr void push_back(const T&);
     constexpr void push_back(T&&);
     constexpr void pop_back();
+    constexpr bool contains(const T&) const;
 
 private:
     uint64_t capacity_ = 0;
@@ -115,16 +116,16 @@ constexpr Vector<T>::~Vector()
 template<class T>
 constexpr T& Vector<T>::operator[](uint64_t pos)
 {
-    assert(pos > 0, "position has to be >0");
-    assert(pos <= length_, "invalid position");
+    assert(pos >= 0, "position has to be >= 0");
+    assert(pos < length_, "position has to be < length");
     return this->data_[pos];
 }
 
 template<class T>
 constexpr const T& Vector<T>::operator[](uint64_t pos) const
 {
-    assert(pos > 0, "position has to be >0");
-    assert(pos <= length_, "invalid position");
+    assert(pos >= 0, "position has to be >= 0");
+    assert(pos < length_, "position has to be < length");
     return this->data_[pos];
 }
 
@@ -206,6 +207,17 @@ constexpr void Vector<T>::pop_back()
     // destroy the object
     ~this->data_[this->length_];
     --this->length;
+}
+
+template<class T>
+constexpr bool Vector<T>::contains(const T& value) const
+{
+    for (auto i = 0; i < this->length_; ++i)
+    {
+        if (this->data_[i] == value)
+            return true;
+    }
+    return false;
 }
 
 }

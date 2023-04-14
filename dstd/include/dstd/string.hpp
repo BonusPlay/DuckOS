@@ -31,7 +31,7 @@ private:
 };
 
 template<typename T>
-requires integral<T>
+requires Integral<T>
 String to_string(const T val_, const uint8_t base = 10)
 {
     char buf[30];

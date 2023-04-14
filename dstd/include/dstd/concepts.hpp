@@ -4,7 +4,7 @@
 namespace dstd
 {
 
-template < class T >
-concept integral = is_integral_v<T>;
+template <class T>
+concept Integral = is_integral_v<T>;
 
 }
