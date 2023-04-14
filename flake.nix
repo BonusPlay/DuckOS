@@ -4,26 +4,37 @@
 
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
+    flake-utils.url = "github:numtide/flake-utils";
   };
 
-  outputs = { self, nixpkgs }:
-    devShell = pkgs.mkShell { buildInputs = with pkgs; [
-      # build deps
-      pkgs.clang_14
-      pkgs.ninja
-      pkgs.cmake
-      pkgs.meson
-      pkgs.nasm
-      pkgs.llvmPackages_latest.bintools
+  outputs = { self, nixpkgs, flake-utils }:
+    flake-utils.lib.eachDefaultSystem (system:
+      let
+        pkgs = import nixpkgs { inherit system; };
+      in
+        {
+          devShell = pkgs.mkShell {
+            buildInputs = with pkgs; [
+              # build deps
+              clang_14
+              ninja
+              cmake
+              meson
+              nasm
+              llvmPackages_latest.bintools
 
-      # run scripts
-      pkgs.grub2
-      pkgs.qemu
-      pkgs.parted
+              # run scripts
+              grub2
+              qemu
+              parted
 
-      # nvim
-      pkgs.ccls
-    ]};
-  };
+              # nvim
+              ccls
+            ];
+            shellHook = ''
+              export CC=clang
+              export CXX=clang++
+            '';
+          };
+        });
 }
-
