@@ -1,6 +1,6 @@
 #pragma once
 #include <dstd/cstdint.hpp>
-#include <dstd/cassert.hpp>
+#include <dstd/assert.hpp>
 #include "serial.hpp"
 
 namespace multiboot2

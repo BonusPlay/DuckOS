@@ -1,6 +1,6 @@
 #pragma once
 #include <dstd/cstdint.hpp>
-#include <dstd/cassert.hpp>
+#include <dstd/assert.hpp>
 #include <dstd/type_traits.hpp>
 
 namespace memory
@@ -17,9 +17,9 @@ struct VirtualAddress
         val = reinterpret_cast<T*>(addr_);
     }
 
-    template<typename T_ = T>
+    template<typename U = T>
     explicit constexpr VirtualAddress(void* addr_)
-    requires(!dstd::is_void_v<T_>)
+    requires(!dstd::is_void_v<U>)
         : val(static_cast<void*>(addr_))
     {}
 
@@ -32,9 +32,9 @@ struct VirtualAddress
         return reinterpret_cast<uint64_t>(val);
     }
 
-    template<typename T_ = T>
-    T_& operator*() const
-    requires(!dstd::is_void_v<T_>)
+    template<typename U = T>
+    U& operator*() const
+    requires(!dstd::is_void_v<U>)
     {
         assert(val != nullptr, "Attempted to deref nullptr");
         return *val;
@@ -64,7 +64,7 @@ struct VirtualAddress
 template<typename T>
 inline bool operator==(const memory::VirtualAddress<T>& lhs, const memory::VirtualAddress<T>& rhs)
 {
-    return lhs.addr == rhs.addr;
+    return lhs.val == rhs.val;
 }
 
 inline memory::VirtualAddress<void> operator "" _v (unsigned long long addr)

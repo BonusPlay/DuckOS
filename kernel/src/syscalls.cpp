@@ -1,7 +1,7 @@
 #include "syscalls.hpp"
 #include "io.hpp"
 #include "log.hpp"
-#include <dstd/cassert.hpp>
+#include <dstd/assert.hpp>
 
 extern uint64_t _SYSCALL_ENTRY_;
 

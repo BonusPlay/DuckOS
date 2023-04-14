@@ -14,11 +14,12 @@ set(CMAKE_ASM_COMPILE_OBJECT "<CMAKE_ASM_COMPILER> <FLAGS> -o <OBJECT> <SOURCE>"
 
 # C++
 set(CMAKE_CXX_COMPILER clang)
-set(CMAKE_CXX_FLAGS "-O2 -Wall -Wextra -std=c++20 -fno-rtti -fno-exceptions -nostdlib -ffreestanding -fno-PIE -target x86_64-none-elf -mcmodel=large -mno-red-zone -mno-mmx -mno-sse -mno-sse2 -ggdb3")
+set(CMAKE_CXX_FLAGS "-O2 -Wall -Wextra -std=c++20 -fno-rtti -fno-exceptions -nostdlib -ffreestanding -fno-PIE -fno-stack-protector -target x86_64-none-elf -mcmodel=large -mno-red-zone -mno-mmx -mno-sse -mno-sse2 -g -ggdb3 -fcolor-diagnostics")
 
 # linker
 set(CMAKE_LINKER ld.lld)
 set(LINKER_SCRIPT ${CMAKE_CURRENT_SOURCE_DIR}/src/asm/linker.ld)
+#set(ARCHDIR "${CMAKE_CURRENT_BINARY_DIR}/CMakeFiles/DuckOS.dir/src/asm")
 set_target_properties(DuckOS PROPERTIES LINK_DEPENDS ${LINKER_SCRIPT})
 target_link_options(DuckOS PRIVATE LINKER: --script ${LINKER_SCRIPT} -nostdlib --no-pie)
 set(CMAKE_CXX_LINK_EXECUTABLE "<CMAKE_LINKER> <CMAKE_CXX_LINK_FLAGS> <LINK_FLAGS> <OBJECTS> -o <TARGET> <LINK_LIBRARIES>")

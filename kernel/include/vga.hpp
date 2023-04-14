@@ -1,6 +1,6 @@
 #pragma once
-#include "dstd/cstdint.hpp"
-#include "dstd/string.hpp"
+#include <dstd/cstdint.hpp>
+#include <dstd/string.hpp>
 
 namespace vga
 {

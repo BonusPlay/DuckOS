@@ -62,9 +62,9 @@ void info(auto&&... args)
     print_wrap(print_wrap, args...);
 }
 
-void warning(auto&&... args)
+void warn(auto&&... args)
 {
-    serial::print("[WARNING] ");
+    serial::print("[WARN] ");
     print_wrap(print_wrap, args...);
 }
 

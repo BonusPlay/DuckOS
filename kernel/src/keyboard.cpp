@@ -168,7 +168,7 @@ void handle_interrupt(interrupts::Frame* interrupt_frame)
         break;
 
     default:
-        log::warning("not handling keycode as it's not ascii");
+        log::warn("not handling keycode as it's not ascii");
         break;
     }
 
