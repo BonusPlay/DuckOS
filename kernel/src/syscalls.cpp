@@ -51,6 +51,7 @@ void setup()
          *
          *  We load null segemnts into MSR, because CPU loads +8 and +16 respectively.
          */
+        // cppcheck-suppress[badBitmaskCheck]
         auto star = (static_cast<uint64_t>(0x00) << 48) | (static_cast<uint64_t>(0x00) << 32);
         io::wrmsr(io::MSR_IA32_STAR, star);
     }

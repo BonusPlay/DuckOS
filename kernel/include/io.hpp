@@ -70,11 +70,30 @@ inline void interrupt()
     );
 }
 
-inline void syscall()
-{
+inline uint64_t syscall(uint64_t syscall_number, ...) {
+    uint64_t ret_val;
+
     asm volatile (
-        "syscall"
+        "mov %[syscall_number], %%rax;"
+        //"mov %[arg1], %%rdi;"
+        //"mov %[arg2], %%rsi;"
+        //"mov %[arg3], %%rdx;"
+        //"mov %[arg4], %%r10;"
+        //"mov %[arg5], %%r8;"
+        //"mov %[arg6], %%r9;"
+        "syscall;"
+        : "=a" (ret_val)
+        : [syscall_number] "r" (syscall_number)
+        //  [arg1] "r" arg1,
+        //  [arg2] "r" arg2,
+        //  [arg3] "r" arg3,
+        //  [arg4] "r" arg4,
+        //  [arg5] "r" arg5,
+        //  [arg6] "r" arg6
+        : "memory", "cc", "%rdi", "%rsi", "%rdx", "%r10", "%r8", "%r9"
     );
+
+    return ret_val;
 }
 
 struct CPUID

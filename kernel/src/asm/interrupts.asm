@@ -127,7 +127,7 @@ isr_stub     31
 
 ; here we start mapped ones
 %assign i 32
-%rep    68
+%rep    224
     isr_stub i
 %assign i i+1
 %endrep

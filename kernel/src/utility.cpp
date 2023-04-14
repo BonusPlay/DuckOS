@@ -1,7 +1,7 @@
 #include "utility.hpp"
 #include "serial.hpp"
 
-void dump_memory(uint64_t addr_from, uint64_t addr_to)
+void dump_memory(uintptr_t& addr_from, uintptr_t& addr_to)
 {
     dump_memory(reinterpret_cast<uint8_t*>(addr_from), reinterpret_cast<uint8_t*>(addr_to));
 }

@@ -11,7 +11,6 @@
 #include "log.hpp"
 #include "syscalls.hpp"
 
-// cppcheck-suppress unusedFunction
 void kmain(void* mb2_struct)
 {
     if (!serial::init())
@@ -32,7 +31,7 @@ void kmain(void* mb2_struct)
     vga::set_color(vga::Color::WHITE);
 
     idt::init();
-    memory::init();
+    //memory::init();
 
     log::debug("Hello before the interrupt");
     io::interrupt<0x40>();
@@ -47,12 +46,12 @@ void kmain(void* mb2_struct)
     syscalls::setup();
 
     log::debug("YOLO CALLING SYSCALL");
-    io::syscall();
+    io::syscall(0x42);
     log::debug("survived?");
 
-    log::info("Going into infinite loop...");
+    /* log::info("Going into infinite loop..."); */
 
-    while(true)
+    /* while(true) */
     {
         __asm__ ("nop");
     }
