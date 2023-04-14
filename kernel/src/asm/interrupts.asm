@@ -135,7 +135,7 @@ isr_stub     31
 global _ISR_STUB_TABLE_
 _ISR_STUB_TABLE_:
 %assign i 0 
-%rep    100
+%rep    0x100
     dq isr_stub_%+i
 %assign i i+1 
 %endrep

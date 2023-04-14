@@ -7,7 +7,7 @@
 #include "keyboard.hpp"
 
 // "injected" by linker
-extern uint64_t* _ISR_STUB_TABLE_[100];
+extern uint64_t* _ISR_STUB_TABLE_[0x100];
 extern idt::IDTEntry _IDT_TABLE_[0x100];
 
 namespace idt
@@ -33,7 +33,7 @@ void IDTEntry::set_offset(uint64_t* offset_)
 void init()
 {
     // zero initialize memory, so we don't have to zero initialize members of structs
-    dstd::memset(&_IDT_TABLE_, 0, sizeof(IDTEntry) * 0x100);
+    dstd::memset(&_IDT_TABLE_, 0, sizeof(_IDT_TABLE_));
 
     for (uint16_t i = 0; i < 0x100; ++i)
     {

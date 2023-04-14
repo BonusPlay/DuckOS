@@ -8,7 +8,7 @@ template<typename T>
 class Ref
 {
 public:
-    Ref(T& t);
+    explicit Ref(T& t);
     Ref(const Ref& other);
     Ref& operator=(const Ref& other);
 

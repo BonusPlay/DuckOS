@@ -79,6 +79,7 @@ inline void syscall()
 
 struct CPUID
 {
+    // cppcheck-suppress[uninitMemberVar]
     CPUID(uint32_t leaf, uint32_t subleaf)
         : leaf(leaf), subleaf(subleaf)
     {

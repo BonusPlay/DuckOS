@@ -30,6 +30,9 @@
 
               # nvim
               ccls
+
+              # testing
+              cppcheck
             ];
             shellHook = ''
               export CC=clang
