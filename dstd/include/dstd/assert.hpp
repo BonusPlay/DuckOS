@@ -1,6 +1,7 @@
 #pragma once
 
-extern void assert_fail(const char* info);
+[[noreturn]]
+extern void assert_fail([[maybe_unused]] const char* info);
 
 #ifdef NDEBUG
 #define assert(cond, info) ((void)0)

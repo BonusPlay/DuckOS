@@ -38,4 +38,14 @@ constexpr T* addressof(T& arg)
     return reinterpret_cast<T*>(&const_cast<char&>(reinterpret_cast<const volatile char&>(arg)));
 }
 
+[[noreturn]]
+inline void unreachable()
+{
+#ifdef __GNUC__ // GCC, Clang, ICC
+    __builtin_unreachable();
+#elifdef _MSC_VER // MSVC
+    __assume(false);
+#endif
+}
+
 }
