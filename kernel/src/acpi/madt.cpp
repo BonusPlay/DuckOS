@@ -1,7 +1,7 @@
 #include "acpi/madt.hpp"
 #include "log.hpp"
 #include "acpi/apic.hpp"
-#include "memory/paging.hpp"
+#include "memory/manager.hpp"
 
 namespace acpi
 {

@@ -6,7 +6,7 @@
 #include "acpi/apic.hpp"
 #include "acpi/rsdt.hpp"
 #include "acpi/madt.hpp"
-#include "memory/paging.hpp"
+#include "memory/manager.hpp"
 #include "multiboot2.hpp"
 #include "log.hpp"
 #include "syscalls.hpp"
@@ -49,12 +49,11 @@ void kmain(void* mb2_struct)
     io::syscall(0x42);
     log::debug("survived?");
 
-    /* log::info("Going into infinite loop..."); */
+    log::info("Going into infinite loop...");
 
-    /* while(true) */
+    while(true)
     {
         __asm__ ("nop");
     }
 
-    log::info("Finished...");
 }

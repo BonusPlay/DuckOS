@@ -2,7 +2,7 @@
 #include "io.hpp"
 
 #include "utility.hpp"
-#include "memory/paging.hpp"
+#include "memory/manager.hpp"
 #include "memory/phys_addr.hpp"
 #include "log.hpp"
 #include "acpi/ioapic.hpp"

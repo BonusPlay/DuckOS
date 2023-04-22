@@ -3,7 +3,7 @@
 #include <dstd/cstring.hpp>
 #include "serial.hpp"
 #include "memory/phys_addr.hpp"
-#include "memory/paging.hpp"
+#include "memory/manager.hpp"
 #include "multiboot2.hpp"
 #include "log.hpp"
 
